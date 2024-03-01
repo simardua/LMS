@@ -1,0 +1,11 @@
+#course{
+    min-width: 80vw;
+    min-height: 100vh;
+    /* border: 1px solid black; */
+    margin: 50px;
+}
+
+.accordion-button:hover{
+    background-color: #66317d;
+    color: white;
+}

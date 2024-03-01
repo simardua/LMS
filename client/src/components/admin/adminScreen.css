@@ -1,0 +1,30 @@
+#main-admin {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 90%;
+    margin: 50px;
+}
+
+#main-admin div {
+    padding: 12px;
+    margin: 12px;
+    width: 92%;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+#main-admin div:hover{
+    background-color: #dbb2ed;
+        transition: background-color 0.5s;
+}
+
+#main-admin div a {
+    font-size: 25px;
+    text-decoration: none;
+    color: #66317d;
+    transition: color 0.3s;
+}
+
+#main-admin div a:hover {
+    color: #3d1d4a;
+}
