@@ -10,6 +10,8 @@ import CreateUser from "./components/admin/CreateUser";
 import ManageUsers from "./components/admin/ManageUsers";
 import EditUser from "./components/admin/EditUser";
 import Profile from "./components/Profile";
+import CreateCourse from "./components/admin/CreateCourse";
+import ManageCourses from "./components/admin/ManageCourses";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
         <Route path="/admin/manageusers" Component={ManageUsers}/>
         <Route path="/admin/manageUsers/:userId" Component={EditUser}/>
         <Route path="/profile" Component={Profile}/>
+        <Route path="/admin/create-course" Component={CreateCourse}/>
+        <Route path="/admin/manage-courses" Component={ManageCourses}/>
       </Routes>
     </BrowserRouter>
   );

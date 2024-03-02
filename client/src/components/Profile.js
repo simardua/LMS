@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './profile.css'
 import { Link } from 'react-router-dom';
 
@@ -11,8 +11,22 @@ const Profile = () => {
         branch: ''
     };
 
+    const user=JSON.parse(localStorage.getItem('user'))
+
     const [formData, setFormData] = useState(initialFormData);
 
+    useEffect(() => {
+      if(user){
+        setFormData({
+            firstName: user.firstname,
+            lastName: user.lastname,
+            email: user.email,
+            branch: user.branch
+        })
+      }
+      }
+    , [user])
+    
 
     return (
         <>
@@ -38,7 +52,7 @@ const Profile = () => {
                                 <input
                                     type="text"
                                     name="name"
-                                    value={formData.name}
+                                    value={formData.firstName}
                                     disabled
                                 />
                             </label>
@@ -48,7 +62,7 @@ const Profile = () => {
                                 <input
                                     type="text"
                                     name="name"
-                                    value={formData.name}
+                                    value={formData.lastName}
                                     disabled
                                 />
                             </label>

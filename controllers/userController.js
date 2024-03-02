@@ -147,4 +147,19 @@ const editUser= async(req,res)=>{
     }
 }
 
-module.exports = { userRegister, loginController, fetchAllUsers, fetchUser, signoutController,deleteUser, editUser };
+const searchUser= async(req,res)=>{
+    const keyword = req.query.search
+    ?{
+        $or:[
+            {firstname: {$regex: req.query.search, $options: "i"}},
+            { lastname: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+        ]
+    }:{};
+
+    const users = await userModel.find(keyword)
+    res.json({message:"user search success", success: true, users})
+    console.log(keyword)
+}
+
+module.exports = { userRegister, loginController, fetchAllUsers, fetchUser, signoutController,deleteUser, editUser, searchUser };

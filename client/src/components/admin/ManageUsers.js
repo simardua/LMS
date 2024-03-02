@@ -1,42 +1,84 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import "./manageUsers.css"
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsersAction } from '../../redux/action/userAction';
+import axios from 'axios';
 
 
 const ManageUsers = () => {
     const dispatch = useDispatch()
     const UsersData = useSelector((state) => state.allUser.users)
     const loading = useSelector((state) => state.allUser.loading)
+    const [search, setSearch] = useState('')
+    const [searchedUser, setSearchedUser] = useState([])
     useEffect(() => {
         dispatch(fetchUsersAction())
     }, [])
     console.log(UsersData)
     const users = UsersData.users
-    console.log(users)
+    // const users = UsersData ? UsersData.users : [];
+    console.log(users);
+
+    // console.log(users)
+
+    useEffect(() => {
+        const userSearch = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/user/?search=${search}`);
+                const userSearchResults = response.data.users;
+                setSearchedUser(userSearchResults);
+                console.log("search", searchedUser)
+            } catch (error) {
+                console.error('Error fetching searched users:', error);
+                setSearchedUser([]); // Set to an empty array in case of an error
+            }
+        };
+
+        userSearch();
+    }, [search]);
+
+
 
     return (
         <>
             <div id='main-manage'>
                 <div id='search'>
-                    <input placeholder='search a user' />
+                    <input placeholder='search a user' onChange={(e) => setSearch(e.target.value)} />
                 </div>
                 <div id='users-list'>
                     {loading ? <>
                         loading....
                     </> : <>
-                        {users && users.length > 0 && users.map((e) => (
-                            <div id='user' key={e._id}>
-                                <div div='user-name'>
-                                    <h5>{e.firstname} {e.lastname}</h5>
-                                    <p>{e.email}</p>
+                        {search !== '' ? <> {searchedUser.length < 1 ? <>No User found</> : <>
+                            {searchedUser && searchedUser.length > 0 && searchedUser.map((e) => (
+                                <div id='user' key={e._id}>
+                                    <div div='user-name'>
+                                        <h5>{e.firstname} {e.lastname}</h5>
+                                        <p>{e.email}</p>
+                                    </div>
+                                    <div id='user-edit'>
+                                        <Link to={`/admin/manageUsers/${e._id}`}>edit</Link>
+                                    </div>
                                 </div>
-                                <div id='user-edit'>
-                                    <Link to={`/admin/manageUsers/${e._id}`}>edit</Link>
+                            ))}
+                        </>}
+
+                        </> : <>
+                            {users && users.length > 0 && users.map((e) => (
+                                <div id='user' key={e._id}>
+                                    <div div='user-name'>
+                                        <h5>{e.firstname} {e.lastname}</h5>
+                                        <p>{e.email}</p>
+                                    </div>
+                                    <div id='user-edit'>
+                                        <Link to={`/admin/manageUsers/${e._id}`}>edit</Link>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </>
+
+                        }
 
                     </>}
 

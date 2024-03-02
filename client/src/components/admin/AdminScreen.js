@@ -13,7 +13,10 @@ const AdminScreen = () => {
                     <Link to="/admin/manageusers">Manage Users</Link>
                 </div>
                 <div>
-                    <Link to="">Manage Courses</Link>
+                    <Link to="/admin/create-course">Create a new course</Link>
+                </div>
+                <div>
+                    <Link to="/admin/manage-courses">Manage Courses</Link>
                 </div>
 
             </div>
