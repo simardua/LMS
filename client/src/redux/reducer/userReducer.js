@@ -1,4 +1,4 @@
-import { DELETE_USER_FAIL, DELETE_USER_REQUEST, DELETE_USER_SUCCESS, FETCH_ALL_USERS_FAIL, FETCH_ALL_USERS_REQUEST, FETCH_ALL_USERS_SUCCESS, FETCH_USER_FAIL, FETCH_USER_REQUEST, FETCH_USER_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS, SIGNOUT_REQUEST, SIGNOUT_SUCCESS } from "../action/userAction"
+import { DELETE_USER_FAIL, DELETE_USER_REQUEST, DELETE_USER_SUCCESS, FETCH_ALL_USERS_FAIL, FETCH_ALL_USERS_REQUEST, FETCH_ALL_USERS_SUCCESS, FETCH_USER_FAIL, FETCH_USER_REQUEST, FETCH_USER_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS, SEARCH_USER_FAIL, SEARCH_USER_REQUEST, SEARCH_USER_SUCCESS, SIGNOUT_REQUEST, SIGNOUT_SUCCESS } from "../action/userAction"
 
 const initialUserState = {
     user: [],
@@ -60,6 +60,27 @@ export const fetchUserReducer=(state=initialAllUserState, action)=>{
             return {...state, isLoading: false, users: action.payload, success:"Users Fetched Successfully"}
         case FETCH_ALL_USERS_FAIL:
             return {...state, isLoading: false, error: action.payload}
+        default:
+            return state
+    }
+}
+
+
+const initialSearchedUserState={
+    user:[],
+    isLoading: "",
+    error: "",
+    success:"",
+}
+
+export const fetchUserSearch=(state=initialSearchedUserState, action)=>{
+    switch(action.type){
+        case SEARCH_USER_REQUEST:
+            return { ...state, isLoading: true }
+        case SEARCH_USER_SUCCESS:
+            return { ...state, isLoading: false, user: action.payload, success: "Users SEARCHED Successfully" }
+        case SEARCH_USER_FAIL:
+            return { ...state, isLoading: false, error: action.payload }
         default:
             return state
     }

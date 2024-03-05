@@ -99,3 +99,18 @@ export const deleteUserAction=(userId)=>async(dispatch)=>{
         dispatch({type:DELETE_USER_FAIL, payload: error.response.data.error})
     }
 }
+
+
+export const SEARCH_USER_REQUEST="SEARCH_USER_REQUEST"
+export const SEARCH_USER_SUCCESS = "SEARCH_USER_SUCCESS"
+export const SEARCH_USER_FAIL = "SEARCH_USER_FAIL"
+
+export const searchUserAction = (input)=>async(dispatch)=>{
+    dispatch({type: SEARCH_USER_REQUEST});
+    try {
+        const res = await axios.get(`http://localhost:5000/api/user/?search=${input}`)
+        dispatch({ type: SEARCH_USER_SUCCESS, payload: res.data.users });
+    } catch (error) {
+        dispatch({type: SEARCH_USER_FAIL, payload: error.res.data.error})
+    }
+}
