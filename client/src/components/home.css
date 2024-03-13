@@ -14,9 +14,11 @@
 }
 
 #course-div {
-    margin: 50px;
+    /* margin: 30px; */
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    max-width: 81vw;
 }
 
 .card {
@@ -68,8 +70,8 @@
     width: 100%;
 }
 
-#main{
-    min-width: 80vw;
+.main{
+    min-width: 75vw;
 }
 
 #announcements{

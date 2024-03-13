@@ -3,14 +3,14 @@ const bcrypt = require("bcrypt");
 const jwt = require("../node_modules/jsonwebtoken")
 
 const userRegister = async (req, res) => {
-    let { firstname, lastname, email, password, confirmpassword, branch } = req.body;
+    let { firstname, lastname, email, password, confirmpassword, accountType, branch, courses } = req.body;
     try {
         const existingUser = await userModel.findOne({ email });
 
         if (existingUser) {
             return res.status(200).send({ message: "User Already Exists", success: false });
         }
-
+        
         const hashedPassword = await bcrypt.hash(password, 10);
         password = hashedPassword;
 
@@ -19,7 +19,9 @@ const userRegister = async (req, res) => {
             lastname,
             email,
             password,
+            accountType,
             branch,
+            courses,
         });
 
         console.log(newUser);
@@ -83,7 +85,7 @@ const fetchAllUsers=async(req,res)=>{
 const fetchUser= async(req,res)=>{
     const {userId} = req.params;
     try {
-        const user = await userModel.findOne({_id: userId})
+        const user = await userModel.findOne({_id: userId}).populate('courses')
         if (!user) {
             return res
                 .status(200)
@@ -131,11 +133,11 @@ const deleteUser = async(req,res)=>{
 
 const editUser= async(req,res)=>{
     const { userId } = req.params;
-    const {firstname, lastname, email, branch}= req.body
+    const {firstname, lastname, email, branch, accountType, courses}= req.body
     try {
         const user = await userModel.updateOne({ _id: userId }, {
             $set:
-            {firstname: firstname, lastname: lastname, email: email, branch: branch}
+            {firstname: firstname, lastname: lastname, email: email, branch: branch, accountType: accountType, courses: courses,}
         })
         if (!user) {
             return res.status(404).send({ message: "user not found", success: false })
@@ -156,7 +158,6 @@ const searchUser= async(req,res)=>{
             { email: { $regex: req.query.search, $options: "i" } },
         ]
     }:{};
-
     const users = await userModel.find(keyword)
     res.json({message:"user search success", success: true, users})
     console.log(keyword)

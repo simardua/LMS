@@ -1,4 +1,5 @@
 import axios from "axios"
+import { useNavigate } from "react-router-dom";
 axios.defaults.baseURL = "http://localhost:5000";
 axios.defaults.withCredentials = true;
 
@@ -30,7 +31,7 @@ export const loginAction = (data) => async (dispatch) => {
         const response = await axios.post("http://localhost:5000/api/user/login", data)
         if (response.data.success) {
             dispatch({ type: LOGIN_SUCCESS, payload: response.data })
-            localStorage.setItem("user",JSON.stringify(response.data))
+            localStorage.setItem("user", JSON.stringify(response.data))
         }
         console.log(response)
         return response;
@@ -75,8 +76,8 @@ export const FETCH_USER_REQUEST = "FETCH_USER_REQUEST"
 export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS"
 export const FETCH_USER_FAIL = "FETCH_USER_FAIL"
 
-export const userAction=(userId)=>async(dispatch)=>{
-    dispatch({type: FETCH_USER_REQUEST});
+export const userAction = (userId) => async (dispatch) => {
+    dispatch({ type: FETCH_USER_REQUEST });
     try {
         const response = await axios.get(`/api/user/${userId}`);
         dispatch({ type: FETCH_USER_SUCCESS, payload: response.data });
@@ -90,27 +91,27 @@ export const DELETE_USER_REQUEST = "DELETE_USER_REQUEST"
 export const DELETE_USER_SUCCESS = "DELETE_USER_SUCCESS"
 export const DELETE_USER_FAIL = "DELETE_USER_FAIL"
 
-export const deleteUserAction=(userId)=>async(dispatch)=>{
-    dispatch({type: DELETE_USER_REQUEST});
+export const deleteUserAction = (userId) => async (dispatch) => {
+    dispatch({ type: DELETE_USER_REQUEST });
     try {
-        const response= await axios.delete(`/api/user/${userId}/delete`);
-        dispatch({type:DELETE_USER_SUCCESS, payload: response.data});
+        const response = await axios.delete(`/api/user/${userId}/delete`);
+        dispatch({ type: DELETE_USER_SUCCESS, payload: response.data });
     } catch (error) {
-        dispatch({type:DELETE_USER_FAIL, payload: error.response.data.error})
+        dispatch({ type: DELETE_USER_FAIL, payload: error.response.data.error })
     }
 }
 
 
-export const SEARCH_USER_REQUEST="SEARCH_USER_REQUEST"
+export const SEARCH_USER_REQUEST = "SEARCH_USER_REQUEST"
 export const SEARCH_USER_SUCCESS = "SEARCH_USER_SUCCESS"
 export const SEARCH_USER_FAIL = "SEARCH_USER_FAIL"
 
-export const searchUserAction = (input)=>async(dispatch)=>{
-    dispatch({type: SEARCH_USER_REQUEST});
+export const searchUserAction = (input) => async (dispatch) => {
+    dispatch({ type: SEARCH_USER_REQUEST });
     try {
         const res = await axios.get(`http://localhost:5000/api/user/?search=${input}`)
         dispatch({ type: SEARCH_USER_SUCCESS, payload: res.data.users });
     } catch (error) {
-        dispatch({type: SEARCH_USER_FAIL, payload: error.res.data.error})
+        dispatch({ type: SEARCH_USER_FAIL, payload: error.res.data.error })
     }
 }

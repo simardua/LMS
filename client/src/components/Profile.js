@@ -1,32 +1,40 @@
 import React, { useEffect, useState } from 'react'
 import './profile.css'
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { userAction } from '../redux/action/userAction';
 
 const Profile = () => {
 
+    const id = JSON.parse(localStorage.getItem('user'))._id
+    const dispatch = useDispatch()
+    const user = useSelector((state) => state.user.user)
+    useEffect(() => {
+        dispatch(userAction(id))
+    }, [])
+
     const initialFormData = {
         firstName: '',
-        lastName:'',
+        lastName: '',
         email: '',
         branch: ''
     };
 
-    const user=JSON.parse(localStorage.getItem('user'))
 
     const [formData, setFormData] = useState(initialFormData);
 
     useEffect(() => {
-      if(user){
-        setFormData({
-            firstName: user.firstname,
-            lastName: user.lastname,
-            email: user.email,
-            branch: user.branch
-        })
-      }
-      }
-    , [user])
-    
+        if (user) {
+            setFormData({
+                firstName: user.user?.firstname,
+                lastName: user.user?.lastname,
+                email: user.user?.email,
+                branch: user.user?.branch
+            })
+        }
+    }
+        , [user])
+
 
     return (
         <>
@@ -38,8 +46,8 @@ const Profile = () => {
                         </div>
 
                         <div id='name'>
-                            <h1>Name</h1>
-                            <p id='designation'>designation</p>
+                            <h1>{user.user?.firstname} {user.user?.lastname}</h1>
+                            <p id='designation'>{user.user?.accountType}</p>
                         </div>
 
                     </div>
@@ -92,7 +100,7 @@ const Profile = () => {
                         </form>
 
                     </div>
-                    
+
                 </div>
             </div>
         </>

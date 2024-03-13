@@ -11,6 +11,7 @@ const courseSchema = new mongoose.Schema({
             ref: "users",
         },
     ],
+    
 },
 {
     timestamps:true

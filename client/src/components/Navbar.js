@@ -1,13 +1,15 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { signoutAction } from '../redux/action/userAction'
 import { useDispatch } from 'react-redux'
 
 const Navbar = () => {
   const dispatch = useDispatch()
   const user = JSON.parse(localStorage.getItem("user"))
+  const navigate = useNavigate()
 
   let handleSignout = () => {
+    navigate('/')
     dispatch(signoutAction())
     user = null
   }

@@ -4,12 +4,27 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUserAction, userAction } from '../../redux/action/userAction';
 import axios from 'axios';
+import { searchCourse } from '../../redux/action/courseAction';
+import UserBadge from '../miscellenious/UserBadge';
 
 const EditUser = () => {
     const navigate= useNavigate()
     const { userId } = useParams();
     const dispatch = useDispatch();
+    const [courses, setCourses] = useState('')
+    const [selectedCourses, setSelectedCourses] = useState([])
+    const [searchedCourses, setSearchedCourses] = useState([])
+    const [accountType, setAccountType] = useState('')
 
+    const coursesSearch = useSelector((state) => state.searchedCourse.courses).courses
+
+    useEffect(() => {
+        const search = () => {
+            dispatch(searchCourse(courses));
+            setSearchedCourses(coursesSearch);
+        };
+        search();
+    }, [courses]);
     useEffect(() => {
         dispatch(userAction(userId));
     }, []);
@@ -32,7 +47,14 @@ const EditUser = () => {
     };
 
         
+    const handleDeleteCourse = (course) => {
+        const updatedCourses = selectedCourses.filter((c) => c._id !== course._id);
+        setSelectedCourses(updatedCourses);
+    }
 
+    const handleAddCourse = (course) => {
+        setSelectedCourses([...selectedCourses, course]);
+    }
     const [firstName, setFirstName] = useState(memoizedUser?.firstname || '');
     const [lastName, setLastName] = useState(memoizedUser?.lastname || '');
     const [email, setEmail] = useState(memoizedUser?.email || '');
@@ -47,6 +69,8 @@ const EditUser = () => {
             setLastName(memoizedUser?.lastname || '');
             setEmail(memoizedUser?.email || '');
             setBranch(memoizedUser?.branch || '');
+            setAccountType(memoizedUser?.accountType);
+            setSelectedCourses(memoizedUser?.courses)
         }
     }, [memoizedUser]);
 
@@ -103,6 +127,18 @@ const EditUser = () => {
                                 required
                             />
 
+                                <label>Account Type:</label>
+                                <select
+                                    value={accountType}
+                                    onChange={(e) => setAccountType(e.target.value)}
+                                    required
+                                >
+                                    <option value="" disabled>Select Account Type</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="Instructor">Instructor</option>
+                                    <option value="Student">Student</option>
+                                </select>
+
                             <label>Branch:</label>
                             <select
                                 value={branch}
@@ -115,6 +151,31 @@ const EditUser = () => {
                                 <option value="mechanical-engineering">Mechanical Engineering</option>
                             </select>
 
+                                <label>Courses:</label>
+                                <input type='text' value={courses} onChange={(e) => setCourses(e.target.value)} />
+                                <div className='d-flex flex-wrap'>
+                                    {selectedCourses.length > 0 ? <>
+                                        {selectedCourses.map((u) => (
+                                            <UserBadge key={u._id} user={u.coursename} handleDelete={() => handleDeleteCourse(u)} />
+                                        ))}
+
+                                    </> : <></>}
+
+                                </div>
+                                <div>
+                                    {courses !== '' ? <>
+                                        {searchedCourses && searchedCourses.length > 0 && searchedCourses.map((e) => (
+                                            <div key={e._id} style={{ border: "1px solid black", maxWidth: "20%", padding: "5px", margin: "5px" }}>
+                                                <button type='button' style={{ width: "100%", padding: "0px", height: "auto" }} onClick={() => handleAddCourse(e)}>
+                                                    <div >
+                                                        <p>{e.coursecode} {e.coursename}</p>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </> : <></>}
+                                </div>
+
                         </form>
                     </div>
                 </> : <>
@@ -122,18 +183,12 @@ const EditUser = () => {
                 </>}
 
                 <br />
-                <div>
-                    <h5>Manage Subjects</h5>
-
-                    <div>
-
-                    </div>
-                </div>
+                
 
                 <div className='d-flex justify-content-around'>
                     <button className='btn btn-primary' data-bs-toggle="modal" data-bs-target="#ConfirmDelete">Delete User</button>
                     <button className='btn btn-primary' onClick={()=>navigate("/admin/manageusers")}>Cancel</button>
-                    <button className='btn btn-primary' onClick={()=>editRequest({firstname: firstName, lastname: lastName,email: email, branch: branch})}>Save Changes</button>
+                    <button className='btn btn-primary' onClick={()=>editRequest({firstname: firstName, lastname: lastName,email: email, branch: branch, accountType: accountType, courses: selectedCourses})}>Save Changes</button>
 
                     <div class="modal fade" id="ConfirmDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">

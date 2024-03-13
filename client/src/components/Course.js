@@ -1,18 +1,20 @@
 import React from 'react'
 import "./course.css"
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 const Course = () => {
+    const {courseId}= useParams()
+    console.log(courseId)
     return (
         <>
             <div id='course'>
                 <div>
                     <ul className="nav nav-tabs">
                         <li className="nav-item">
-                            <Link className="nav-link active" aria-current="page" to="/course">Contents</Link>
+                            <Link className="nav-link active" aria-current="page" to={`/${courseId}/course`}>Contents</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/course/events">Events</Link>
+                            <Link className="nav-link" to={`/${courseId}/course/events`}>Events</Link>
                         </li>
                     </ul>
                 </div>

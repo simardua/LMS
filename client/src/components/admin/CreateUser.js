@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
-import "./createUser.css"
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react'
+// import "./createUser.css"
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { registerAction } from '../../redux/action/userAction';
+import UserBadge from '../miscellenious/UserBadge';
+import { searchCourse } from '../../redux/action/courseAction';
 
 const CreateUser = () => {
     const [firstName, setFirstName] = useState('');
@@ -11,12 +13,39 @@ const CreateUser = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [branch, setBranch] = useState('');
+    const [accountType, setAccountType]= useState('')
     const dispatch= useDispatch()
+    const [courses, setCourses]= useState('')
+    const [selectedCourses, setSelectedCourses]=useState([])
+    const [searchedCourses, setSearchedCourses]=useState([])
+
+    const coursesSearch=useSelector((state)=>state.searchedCourse.courses).courses
+
+    useEffect(() => {
+        const search =() => {
+            dispatch(searchCourse(courses));
+            setSearchedCourses(coursesSearch);
+        };
+        search();
+    }, [courses]);
+   
 
     const handleSubmit = async(e) => {
-        const res = await dispatch(registerAction({firstname: firstName, lastname: lastName, email: email, password: password, branch: branch}))
+        if(password==confirmPassword){
+            await dispatch(registerAction({ firstname: firstName, lastname: lastName, email: email, password: password, accountType: accountType, branch: branch, courses:selectedCourses }))
+        }
     };
 
+    const handleDeleteCourse=(course)=>{
+        const updatedCourses = selectedCourses.filter((c) => c._id !== course._id);
+        setSelectedCourses(updatedCourses);
+    }
+
+    const handleAddCourse = (course) => {
+        setSelectedCourses([...selectedCourses, course]);
+    }
+
+    console.log("selected", selectedCourses)
   return (
     <>
           <div className="signup-container">
@@ -63,6 +92,18 @@ const CreateUser = () => {
                       required
                   />
 
+                  <label>Account Type:</label>
+                  <select
+                      value={accountType}
+                      onChange={(e) => setAccountType(e.target.value)}
+                      required
+                  >
+                  <option value="" disabled>Select Account Type</option>
+                      <option value="Admin">Admin</option>
+                      <option value="Instructor">Instructor</option>
+                      <option value="Student">Student</option>
+                      </select>
+
                   <label>Branch:</label>
                   <select
                       value={branch}
@@ -74,6 +115,31 @@ const CreateUser = () => {
                       <option value="electrical-engineering">Electrical Engineering</option>
                       <option value="mechanical-engineering">Mechanical Engineering</option>
                   </select>
+
+                  <label>Courses:</label>
+                  <input type='text' value={courses} onChange={(e) => setCourses(e.target.value)} />
+                  <div className='d-flex flex-wrap'>
+                      {selectedCourses.length > 0 ? <>
+                          {selectedCourses.map((u) => (
+                              <UserBadge key={u._id} user={u.coursename} handleDelete={() => handleDeleteCourse(u)} />
+                          ))}
+
+                      </> : <></>}
+
+                  </div>
+                  <div>
+                      {courses !== '' ? <>
+                          {searchedCourses && searchedCourses.length > 0 && searchedCourses.map((e) => (
+                              <div key={e._id} style={{ border: "1px solid black", maxWidth: "20%", padding: "5px", margin: "5px" }}>
+                                  <button type='button' style={{ width: "100%", padding: "0px", height: "auto" }} onClick={() => handleAddCourse(e)}>
+                                      <div >
+                                          <p>{e.coursecode} {e.coursename}</p>
+                                      </div>
+                                  </button>
+                              </div>
+                          ))}
+                      </> : <></>}
+                  </div>
 
                   <button onClick={handleSubmit} type="submit">Signup</button>
               </form>

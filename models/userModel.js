@@ -28,8 +28,12 @@ const userSchema = new mongoose.Schema({
     accountType: {
         type: String,
         enum: ["Admin", "Student", "Instructor"],
-        // required: true,
+        required: true,
     },
+    courses:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"course",
+    },],
     token: String,
 },
 {timestamps: true}
