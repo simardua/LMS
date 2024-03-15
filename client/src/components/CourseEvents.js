@@ -1,10 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import DateTimePicker from 'react-datetime-picker';
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
+import axios from 'axios';
 
 const CourseEvents = () => {
     const { courseId } = useParams()
     const localUser = JSON.parse(localStorage.getItem('user'))
     console.log(localUser.accountType)
+    const [value, onChange] = useState(null);
+
+
+    const createAttendance=async(data)=>{
+        const response = await axios.post(`http://localhost:5000/api/attendance/${courseId}/create-attendance`, data)
+    }
     return (
         <>
             {localUser.accountType === 'Admin' || localUser.accountType === 'Instructor' ? (
@@ -58,11 +69,11 @@ const CourseEvents = () => {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            ...
+                            <DateTimePicker onChange={onChange} value={value} />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Create</button>
+                            <button type="button" class="btn btn-primary" onClick={() => createAttendance({ instructorId: localUser._id, date: value})}>Create</button>
                         </div>
                     </div>
                 </div>

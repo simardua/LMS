@@ -1,7 +1,8 @@
 const express = require('express')
-const { createAttendence } = require('../controllers/attendenceController')
+const { createAttendance, markAttendance } = require('../controllers/attendenceController')
 const router = express.Router()
 
-router.post("/create-attendence", createAttendence)
+router.post("/:courseId/create-attendance", createAttendance)
+router.post("/:attendanceId/mark-attendance", markAttendance)
 
 module.exports=router

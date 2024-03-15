@@ -163,4 +163,54 @@ const searchUser= async(req,res)=>{
     console.log(keyword)
 }
 
+
+
+// const createAttendance = async (req, res) => {
+//     const { course, date } = req.body;
+
+//     try {
+//         const users = await userModel.find({});
+//         const updatedUsers = users.filter((user) => {
+//             return user.courses.some((key) => key === course._id);
+//         });
+//         console.log(updatedUsers)
+//         await Promise.all(updatedUsers.map(async (user) => {
+//             user.courseAttendances.push({
+//                 course: course._id,
+//                 attendance: {
+//                     date: date,
+//                     isPresent: false
+//                 }
+//             });
+//             await user.save();
+//         }));
+
+//         return res.status(200).send({ success: true, message: 'Attendance created successfully' });
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).send({ success: false, message: 'Internal Server Error' });
+//     }
+// }
+
+
+// const updateAttendance = async (req, res) => {
+//     const { user, course, date } = req.body;
+//     try {
+//         const foundUser = await userModel.findOne({ _id: user?._id });
+//         if (!foundUser) {
+//             return res.status(404).send({ success: false, message: 'User not found' });
+//         }
+//         foundUser.courseAttendances.forEach((item) => {
+//             if (item.course.toString() === course._id.toString() && item.attendance.date === date) {
+//                 item.attendance.isPresent = true;
+//             }
+//         });
+//         await foundUser.save();
+//         return res.status(200).send({ success: true, message: 'Attendance updated successfully' });
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).send({ success: false, message: 'Internal Server Error' });
+//     }
+// };
+
 module.exports = { userRegister, loginController, fetchAllUsers, fetchUser, signoutController,deleteUser, editUser, searchUser };

@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
         default: null,
         min: 8,
     },
-    branch:{
+    branch: {
         type: String,
         required: true
     },
@@ -30,13 +30,28 @@ const userSchema = new mongoose.Schema({
         enum: ["Admin", "Student", "Instructor"],
         required: true,
     },
-    courses:[{
+    courses: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref:"course",
+        ref: "course",
     },],
     token: String,
+    // courseAttendances: [{
+    //     course: {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: "course"
+    //     },
+    //     attendance: {
+    //         date: {
+    //             type: Date
+    //         },
+    //         isPresent: {
+    //             type: Boolean,
+    //             default: false
+    //         }
+    //     }
+    // }]
 },
-{timestamps: true}
+    { timestamps: true }
 )
 
 const userModel = mongoose.model('users', userSchema);
