@@ -29,27 +29,28 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["Admin", "Student", "Instructor"],
         required: true,
+        default:"Student"
     },
     courses: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "course",
     },],
     token: String,
-    // courseAttendances: [{
-    //     course: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: "course"
-    //     },
-    //     attendance: {
-    //         date: {
-    //             type: Date
-    //         },
-    //         isPresent: {
-    //             type: Boolean,
-    //             default: false
-    //         }
-    //     }
-    // }]
+    courseAttendances: [{
+        course: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "course"
+        },
+        attendance: [{
+            date: {
+                type: Date
+            },
+            isPresent: {
+                type: Boolean,
+                default: false
+            }
+        }]
+    }]
 },
     { timestamps: true }
 )

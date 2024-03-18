@@ -13,6 +13,8 @@ import Profile from "./components/Profile";
 import CreateCourse from "./components/admin/CreateCourse";
 import ManageCourses from "./components/admin/ManageCourses";
 import EditCourse from "./components/admin/EditCourse";
+import Attendance from "./components/Attendance";
+import UserAttendance from "./components/UserAttendance";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/login" Component={Login}/>
         <Route path="/:courseId/course" Component={Course}/>
         <Route path="/:courseId/course/events" Component={CourseEvents}/>
+        <Route path="/attendance/:courseId" Component={Attendance}/>
+        <Route path="/userAttendance/:courseId/:date" Component={UserAttendance} />
         <Route path="/mycourses" Component={MyCourses}/>
         <Route path="/admin" Component={AdminScreen}/>
         <Route path="/admin/createuser" Component={CreateUser} />

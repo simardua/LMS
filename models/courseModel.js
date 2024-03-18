@@ -11,6 +11,11 @@ const courseSchema = new mongoose.Schema({
             ref: "users",
         },
     ],
+    attendance:[{
+        date:{
+            type:Date
+        }
+    }]
     
 },
 {

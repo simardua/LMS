@@ -163,6 +163,19 @@ const searchUser= async(req,res)=>{
     console.log(keyword)
 }
 
+const getUser=async(req,res)=>{
+    try{
+      const userId=req.params.id;
+      const user=await userModel.findOne({_id:userId})
+      if(!user){
+        return res.status(400).send({success:false,message:'User not found'})
+      }
+      return res.status(200).send({success:true,message:'data fetched',data:user})
+    }catch(error){
+      console.log(error.message)
+      return res.status(500).send({success:false,message:'Internal Server error'})
+    }
+  }
 
 
 // const createAttendance = async (req, res) => {
@@ -213,4 +226,4 @@ const searchUser= async(req,res)=>{
 //     }
 // };
 
-module.exports = { userRegister, loginController, fetchAllUsers, fetchUser, signoutController,deleteUser, editUser, searchUser };
+module.exports = { userRegister,getUser, loginController, fetchAllUsers, fetchUser, signoutController,deleteUser, editUser, searchUser };
