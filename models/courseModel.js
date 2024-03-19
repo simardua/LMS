@@ -11,17 +11,20 @@ const courseSchema = new mongoose.Schema({
             ref: "users",
         },
     ],
-    attendance:[{
-        date:{
-            type:Date
+    attendance: [{
+        date: {
+            type: Date
         }
+    }],
+    courseContent: [{
+        type: mongoose.Schema.Types.ObjectId, ref: "content"
     }]
-    
+
 },
-{
-    timestamps:true
-}
+    {
+        timestamps: true
+    }
 )
 
-const courseModel = mongoose.model('course', courseSchema )
+const courseModel = mongoose.model('course', courseSchema)
 module.exports = courseModel

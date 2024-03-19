@@ -23,7 +23,7 @@ app.use(morgan("dev"));
 app.use("/api/user", require("./routes/userRoutes.js"));
 app.use("/api/course", require("./routes/courseRoutes.js"));
 app.use("/api/attendance", require("./routes/attendenceRoutes.js"));
-// app.use("/api/content", require('./routes/contentRoutes.js'))
+app.use("/api/content", require('./routes/contentRoutes.js'))
 
 const port = process.env.PORT || 5000;
 

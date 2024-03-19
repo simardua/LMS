@@ -38,7 +38,7 @@ const fetchAllCourses=async(req,res)=>{
 const fetchCourse= async(req,res)=>{
     const {courseId}= req.params;
     try {
-        const course = await courseModel.findOne({ _id: courseId }).populate('instructors').populate('studentsEnrolled')
+        const course = await courseModel.findOne({ _id: courseId }).populate('instructors', '-password').populate('studentsEnrolled', '-password').populate('courseContent')
         if(!course){
             return res.status(404).send({message: "Course not found", success: false})
         }
@@ -100,5 +100,7 @@ const deleteCourse = async(req,res)=>{
         return res.status(500).send({ success: false, message: 'Internal Server Error' })
     }
 }
+
+
 
 module.exports= {createCourse, fetchCourse, fetchAllCourses, searchCourse, editCourse, deleteCourse}

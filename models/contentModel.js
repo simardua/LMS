@@ -1,21 +1,17 @@
 const mongoose= require('mongoose')
 const contentSchema = new mongoose.Schema({
-    course: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "course",
-        required: true,
+    heading: {
+        type: String
     },
-    instructor: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "users",
-        required: true,
+    description: {
+        type: String
     },
-    content: {
-        type:String
+    URL: {
+        type: String
     },
-    description:{
-        type:String,
-    },
+    file: {
+        type: String
+    }
 },
 {timestamps:true}
 )

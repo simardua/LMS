@@ -81,8 +81,8 @@ const Attendance = () => {
                         <tbody>
                             {attendance.map((item, index) => (
                                 <tr key={index}>
-                                    <td style={{ border: "1px solid black", padding: "8px"}} >{item?.date}</td>
-                                    <td style={{ border: "1px solid black", padding: "8px"}} >{item?.isPresent ? "Present" : "Absent"}</td>
+                                    <td style={{ border: "1px solid black", padding: "8px"}}>{item?.date}</td>
+                                    <td style={{ border: "1px solid black", padding: "8px"}}>{item?.isPresent ? "Present" : "Absent"}</td>
                                 </tr>
                             ))}
                         </tbody>
