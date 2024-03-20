@@ -4,6 +4,8 @@ import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourse } from '../redux/action/courseAction';
+import firebase from 'firebase/compat/app';
+import "firebase/compat/storage"
 
 const Course = () => {
     const { courseId } = useParams();
@@ -20,7 +22,7 @@ const Course = () => {
         heading: '',
         description: '',
         url: '',
-        file: null,
+        file: "",
     });
 
     const handleChange = (e) => {
@@ -32,10 +34,23 @@ const Course = () => {
     };
 
     const handleFileChange = (e) => {
-        setFormData({
-            ...formData,
-            file: e.target.files[0],
-        });
+        let uploadfile = e.target.files[0]
+        if (uploadfile) {
+            const storageRef = firebase.storage().ref()
+            const fileRef = storageRef.child(uploadfile.name)
+            fileRef.put(uploadfile).then((snapshot) => {
+                snapshot.ref.getDownloadURL().then((downloadurl) => {
+                    console.log("filelink",downloadurl)
+                    setFormData(({
+                        ...formData,
+                        file: downloadurl
+                    }))
+                })
+            })
+        }
+        else {
+            alert("No file selected")
+        }
     };
 
     const [openAccordion, setOpenAccordion] = useState(null);
@@ -97,7 +112,7 @@ const Course = () => {
                                     <textarea
                                         id="description"
                                         name="description"
-                                        style={{width: "470px", height:"250px"}}
+                                        style={{ width: "470px", height: "250px" }}
                                         value={formData.description}
                                         onChange={handleChange}
                                     />
@@ -118,6 +133,7 @@ const Course = () => {
                                         type="file"
                                         id="file"
                                         name="file"
+                                        accept=''
                                         onChange={handleFileChange}
                                     />
                                 </div>
@@ -155,7 +171,7 @@ const Course = () => {
                                     <div className="accordion-body">
                                         <p>{content.description}</p>
                                         <a href={content.URL}>{content.URL}</a>
-                                        <p>{content.files}</p>
+                                        <p>{content.file}</p>
                                     </div>
                                 </div>
                             </div>
