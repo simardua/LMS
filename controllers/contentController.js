@@ -3,7 +3,7 @@ const courseModel = require("../models/courseModel");
 
 const addContent = async (req, res) => {
     const { courseId } = req.params;
-    const { heading, description, URL, file } = req.body;
+    const { heading, description, URL, file, media } = req.body;
 
     try {
         // Check if the course exists

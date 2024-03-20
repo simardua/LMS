@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourse } from '../redux/action/courseAction';
 import firebase from 'firebase/compat/app';
 import "firebase/compat/storage"
+import UploadWidget from './miscellenious/UploadWidget';
 
 const Course = () => {
     const { courseId } = useParams();
@@ -16,13 +17,14 @@ const Course = () => {
     const course = useSelector((state) => state.courses.courses).course;
     useEffect(() => {
         dispatch(fetchCourse(courseId));
-    }, []);
+    }, [courseId]);
     console.log(course);
     const [formData, setFormData] = useState({
         heading: '',
         description: '',
-        url: '',
-        file: "",
+        url: [],
+        file: [],
+        media: [],
     });
 
     const handleChange = (e) => {
@@ -40,7 +42,7 @@ const Course = () => {
             const fileRef = storageRef.child(uploadfile.name)
             fileRef.put(uploadfile).then((snapshot) => {
                 snapshot.ref.getDownloadURL().then((downloadurl) => {
-                    console.log("filelink",downloadurl)
+                    console.log("filelink", downloadurl)
                     setFormData(({
                         ...formData,
                         file: downloadurl
@@ -59,16 +61,25 @@ const Course = () => {
         setOpenAccordion(index === openAccordion ? null : index);
     };
 
-    const handleSubmit = async (e) => {
+    const handleCreateContent = async (e) => {
         e.preventDefault();
-        await axios.post(`http://localhost:5000/api/content/${courseId}/add-content`, { heading: formData.heading, description: formData.description, URL: formData.url, file: formData.file });
+        await axios.post(`http://localhost:5000/api/content/${courseId}/add-content`, { heading: formData.heading, description: formData.description, URL: formData.url, file: formData.file, media: formData.media });
         setFormData({
             heading: '',
             description: '',
-            url: '',
+            url: [],
             file: null,
+            media: null,
         });
     };
+
+    const media_url = (data) => {
+        setFormData(({
+            ...formData,
+            media: data
+        }))
+        // console.log(data)
+    }
 
     return (
         <>
@@ -133,15 +144,26 @@ const Course = () => {
                                         type="file"
                                         id="file"
                                         name="file"
-                                        accept=''
+                                        accept='.pdf'
                                         onChange={handleFileChange}
                                     />
+                                </div>
+                                <div>
+                                    <label htmlFor="media">media:</label>
+                                    {/* <input
+                                        type="file"
+                                        id="media"
+                                        name="media"
+                                        accept='.jpg,.jpeg,.png,.mp4'
+                                        onChange={handleChange}
+                                    /> */}
+                                    <UploadWidget func={media_url} />
                                 </div>
                             </form>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" onClick={handleSubmit}>Create</button>
+                            <button type="button" className="btn btn-primary" onClick={handleCreateContent}>Create</button>
                         </div>
                     </div>
                 </div>
@@ -171,7 +193,9 @@ const Course = () => {
                                     <div className="accordion-body">
                                         <p>{content.description}</p>
                                         <a href={content.URL}>{content.URL}</a>
-                                        <p>{content.file}</p>
+                                        {content.file?.includes('.pdf') ? <>
+                                            <a href={content.file}>Pdf file</a>
+                                        </> : <></>}
                                     </div>
                                 </div>
                             </div>
