@@ -15,12 +15,13 @@ const UploadWidget = ({ func }) => { // Destructure func from props
             if (!error && result && result.event === 'success') {
                 const { secure_url } = result.info;
                 setUrl(secure_url);
-                func(secure_url); // Call func with the secure_url
+                // console.log(url)
+                func(secure_url);
             } else {
                 console.error('Error uploading file:', error);
             }
         });
-    }, []); // Add an empty dependency array to run the effect only once
+    }, []); 
 
     return (
         <div>

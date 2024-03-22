@@ -6,15 +6,15 @@ const contentSchema = new mongoose.Schema({
     description: {
         type: String
     },
-    URL: [{
+    URL: {
         type: String
-    }],
-    file: [{
+    },
+    file: {
         type: String
-    }],
-    media:[{
+    },
+    media:{
         type: String
-    }],
+    },
 },
 {timestamps:true}
 )

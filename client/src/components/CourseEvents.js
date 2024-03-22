@@ -10,12 +10,23 @@ const CourseEvents = () => {
     const { courseId } = useParams()
     const localUser = JSON.parse(localStorage.getItem('user'))
     console.log(localUser.accountType)
-    const [value, onChange] = useState(null);
+    const [attendance, setAttendance] = useState(null);
+    
+    const [eventName, setEventName] = useState('')
+    const [eventDescription, setEventDescription] = useState('')
+    const [startTime, setStartTime] = useState(null)
+    const [deadLine, setDeadLine] = useState(null)
+
+
+    const createEvent = async (e) => {
+        e.preventDefault();
+    };
 
 
     const createAttendance=async(data)=>{
         const response = await axios.post(`http://localhost:5000/api/attendance/${courseId}/create-attendance`, data)
     }
+    
     return (
         <>
             {localUser.accountType === 'Admin' || localUser.accountType === 'Instructor' ? (
@@ -52,11 +63,38 @@ const CourseEvents = () => {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            ...
+                            <form>
+                                <label>
+                                    Event Name:
+                                    <input type="text" name="eventName" value={eventName} onChange={(e) => setEventName(e.target.value)} />
+                                </label>
+                                <label>
+                                    Event Description:
+                                    <textarea
+                                        name="eventDescription"
+                                        style={{ width: "470px", height: "250px" }}
+                                        value={eventDescription}
+                                        onChange={(e) => setEventDescription(e.target.value)}
+                                    />
+                                </label>
+                                <label>
+                                    Start Time:
+                                    <DateTimePicker
+                                        name="startTime"
+                                        onChange={setStartTime}
+                                        value={startTime}
+                                    />
+
+                                </label>
+                                <label>
+                                    Deadline:
+                                    <DateTimePicker name='deadLine' onChange={setDeadLine} value={deadLine} />
+                                </label>
+                            </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Create</button>
+                            <button type="button" class="btn btn-primary" onClick={createEvent}>Create</button>
                         </div>
                     </div>
                 </div>
@@ -69,11 +107,11 @@ const CourseEvents = () => {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <DateTimePicker onChange={onChange} value={value} />
+                            <DateTimePicker onChange={setAttendance} value={attendance} />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onClick={() => createAttendance({ instructorId: localUser._id, date: value})}>Create</button>
+                            <button type="button" class="btn btn-primary" onClick={() => createAttendance({ instructorId: localUser._id, date: attendance})}>Create</button>
                         </div>
                     </div>
                 </div>
