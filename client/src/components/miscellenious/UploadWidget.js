@@ -14,18 +14,21 @@ const UploadWidget = ({ func }) => { // Destructure func from props
         }, function (error, result) {
             if (!error && result && result.event === 'success') {
                 const { secure_url } = result.info;
-                setUrl(secure_url);
+                setUrl(prevUrl => {
+                    func(secure_url);
+                    return secure_url;
+                });
                 // console.log(url)
                 func(secure_url);
             } else {
                 console.error('Error uploading file:', error);
             }
         });
-    }, []); 
+    }, [func]);
 
     return (
         <div>
-            <button onClick={() => widgetRef.current.open()}>
+            <button type='button' onClick={(e) => widgetRef.current.open()} >
                 Upload
             </button>
         </div>

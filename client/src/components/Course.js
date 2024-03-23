@@ -105,7 +105,7 @@ const Course = () => {
                             <h1 className="modal-title fs-5" id="exampleModalLabel">Create a new content</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div className="modal-body">
+                        <div className="modal-body" style={{overflowX:"hidden"}}>
                             <form>
                                 <div>
                                     <label htmlFor="heading">Heading:</label>
@@ -157,6 +157,7 @@ const Course = () => {
                                         accept='.jpg,.jpeg,.png,.mp4'
                                         onChange={handleChange}
                                     /> */}
+                                    <p> {formData.media}</p>
                                     <UploadWidget func={media_url} />
                                 </div>
                             </form>

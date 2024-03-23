@@ -21,7 +21,8 @@ const addContent = async (req, res) => {
             heading,
             description,
             URL,
-            file
+            file,
+            media
         });
 
         // Push new content to the course and save the course
