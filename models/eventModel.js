@@ -9,21 +9,23 @@ const eventSchema = new mongoose.Schema({
     eventDescription: { type: String, required: true, },
     startTime: { type: Date, required: true, },
     deadLine: { type: Date, required: true, },
-    file: {
+    submissions: [{
         submittedOn: {
             type: Date,
 
         },
         fileUrl: {
             type: String
+        },
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "users"
+    
+        },
+        comments:{
+            type:String
         }
-    },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "users"
-
-    }
-
+    }],
 },
     {
         timestamps: true

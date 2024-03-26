@@ -1,5 +1,8 @@
 const express = require('express');
-const { userRegister, loginController, fetchAllUsers,getUser, fetchUser, signoutController, deleteUser, editUser, searchUser, createAttendance } = require('../controllers/userController');
+const multer = require('multer');
+const storage = multer.memoryStorage(); // Use memory storage for file upload
+const upload = multer({ storage: storage });
+const { userRegister, loginController, fetchAllUsers,getUser, fetchUser, signoutController, deleteUser, editUser, searchUser, createAttendance, uploadFileUrl } = require('../controllers/userController');
 
 const router = express.Router()
 
@@ -12,6 +15,7 @@ router.delete("/:userId/delete", deleteUser)
 router.put("/:userId/edit", editUser)
 router.get("/",searchUser)
 router.post('/getUser/:id',getUser)
+
 
 // router.post("/attendence", createAttendance)
 

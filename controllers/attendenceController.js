@@ -164,15 +164,7 @@ const markAttendance = async (req, res) => {
     }
 };
 
-const fetchAttendance=async(req,res)=>{
-    const {courseId} = req.params
-    const {userId}= req.body
-    try {
-        const courseAttendances= await attendanceModel.findById(courseId)
-    } catch (error) {
-        
-    }
-}
+
 
 const getAttendance=async(req,res)=>{
     const courseId=req.params.id

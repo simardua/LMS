@@ -2,6 +2,7 @@ const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("../node_modules/jsonwebtoken")
 
+
 const userRegister = async (req, res) => {
     let { firstname, lastname, email, password, confirmpassword, accountType, branch, courses } = req.body;
     try {
@@ -226,4 +227,4 @@ const getUser=async(req,res)=>{
 //     }
 // };
 
-module.exports = { userRegister,getUser, loginController, fetchAllUsers, fetchUser, signoutController,deleteUser, editUser, searchUser };
+module.exports = { userRegister,getUser, loginController, fetchAllUsers, fetchUser, signoutController,deleteUser, editUser, searchUser};
