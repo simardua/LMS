@@ -26,8 +26,8 @@ const CourseEvents = () => {
     const [events, setEvents] = useState([])
     const [selectedDocument, setSelectedDocument] = useState()
     const [documentSelected, setDocumentSelected] = useState(false)
-
-
+    const [singleSubmission, setSingleSubmission] = useState(null)
+    const [loading, setLoading] = useState(false)
 
 
     // events
@@ -86,7 +86,7 @@ const CourseEvents = () => {
     const updatePost = async (id) => {
         try {
             const res = await axios.post(`http://localhost:5000/api/event/post/${id}`,
-                { userId: user?._id, file: submissionFile, comments: comments });
+                { userId: localUser._id, file: submissionFile, comments: comments });
             console.log(res.data)
         } catch (error) {
             console.log(error);
@@ -97,7 +97,13 @@ const CourseEvents = () => {
         const response = await axios.post(`http://localhost:5000/api/attendance/${courseId}/create-attendance`, data)
     }
 
-
+    const fetchUserSubmission = async (id) => {
+        setLoading(true)
+        const response = await axios.post(`http://localhost:5000/api/event/user-submission/${id}`, { userId: localUser?._id })
+        setSingleSubmission(response.data)
+        console.log(singleSubmission)
+        setLoading(false)
+    }
 
 
     useEffect(() => {
@@ -225,7 +231,7 @@ const CourseEvents = () => {
                                 return (
                                     <div className="accordion-item">
                                         <h2 className="accordion-header" id="flush-headingTwo">
-                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" onClick={() => fetchUserSubmission(item?._id)}>
                                                 {item?.eventName}
                                             </button>
                                         </h2>
@@ -235,59 +241,65 @@ const CourseEvents = () => {
 
                                                 <h6><b>Created on:</b> {item?.startTime}</h6>
                                                 <h6><b>Deadline:</b> {item?.deadLine}</h6>
+                                                {loading ? <>loading....</> : <>
+                                                    {singleSubmission && singleSubmission.success ? <>
+                                                        <h6><b>Submitted File: </b><Link to={singleSubmission.submission.fileUrl}>file</Link></h6>
+                                                        <h6><b>Submitted at: </b>{singleSubmission.submission.submittedOn}</h6>
+                                                        <p>Comments: {singleSubmission.submission.comments}</p>
+                                                    </> : <>
+
+                                                        <div>
+                                                            <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submissionModal">
+                                                                Add Submission
+                                                            </button>
+                                                            <p>No submissions yet.</p>
+
+                                                            {/* Modal */}
+                                                            <div className="modal fade" id="submissionModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                <div className="modal-dialog">
+                                                                    <div className="modal-content">
+                                                                        <div className="modal-header">
+                                                                            <h1 className="modal-title fs-5" id="exampleModalLabel">Add Submission</h1>
+                                                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                                                        </div>
+                                                                        <div className="modal-body">
+
+                                                                            <input
+                                                                                type="file"
+                                                                                accept=".pdf,.doc,.docx,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                                                name="document"
+                                                                                id="file"
+                                                                                style={{ display: 'none' }}
+                                                                                onChange={handleFileUpload}
+                                                                            />
+                                                                            <p>
+                                                                                <label htmlFor="file">Select a document</label>
+                                                                            </p>
+                                                                            {selectedDocument && <p>Selected document: {selectedDocument.name}</p>}
 
 
-
-                                                <div>
-                                                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submissionModal">
-                                                        Add Submission
-                                                    </button>
-                                                    <p>No submissions yet.</p>
-                                                    {/* Modal */}
-                                                    <div className="modal fade" id="submissionModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                        <div className="modal-dialog">
-                                                            <div className="modal-content">
-                                                                <div className="modal-header">
-                                                                    <h1 className="modal-title fs-5" id="exampleModalLabel">Add Submission</h1>
-                                                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                                                </div>
-                                                                <div className="modal-body">
-
-                                                                    <input
-                                                                        type="file"
-                                                                        accept=".pdf,.doc,.docx,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                                                        name="document"
-                                                                        id="file"
-                                                                        style={{ display: 'none' }}
-                                                                        onChange={handleFileUpload}
-                                                                    />
-                                                                    <p>
-                                                                        <label htmlFor="file">Select a document</label>
-                                                                    </p>
-                                                                    {selectedDocument && <p>Selected document: {selectedDocument.name}</p>}
+                                                                            <label>
+                                                                                Comments:
+                                                                                <textarea
+                                                                                    name="comments"
+                                                                                    style={{ width: "470px", height: "250px" }}
+                                                                                    value={comments}
+                                                                                    onChange={(e) => setComments(e.target.value)}
+                                                                                />
+                                                                            </label>
 
 
-                                                                    <label>
-                                                                        Comments:
-                                                                        <textarea
-                                                                            name="comments"
-                                                                            style={{ width: "470px", height: "250px" }}
-                                                                            value={comments}
-                                                                            onChange={(e) => setComments(e.target.value)}
-                                                                        />
-                                                                    </label>
-
-
-                                                                </div>
-                                                                <div className="modal-footer">
-                                                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                    <button type="button" className="btn btn-primary" onClick={() => updatePost(item?._id)} >Save changes</button>
+                                                                        </div>
+                                                                        <div className="modal-footer">
+                                                                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                            <button type="button" className="btn btn-primary" onClick={() => updatePost(item?._id)} >Save changes</button>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-
+                                                    </>}
+                                                </>}
                                             </div>
                                         </div>
                                     </div>

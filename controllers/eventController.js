@@ -67,4 +67,35 @@ const postController=async(req,res)=>{
     }
   }
 
-module.exports ={createEvent,fetchEvents,postController}
+
+const fetchUserSubmission = async (req, res) => {
+  const { eventId } = req.params;
+  const { userId } = req.body;
+  try {
+    const event = await eventModel.findById(eventId);
+    if (!event) {
+      return res.status(400).send({ success: false, message: "Event doesn't exist" });
+    }
+
+    // Find submission by userId
+    const submission = event.submissions.find(submission => {
+      if (submission.userId) {
+        return submission.userId == userId;
+      }
+      return false;
+    });
+
+    if (!submission) {
+      return res.status(200).send({ success: false, message: "Submission doesn't exist" });
+    }
+
+    return res.status(200).send({ success: true, message: "Submission fetch success", submission });
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error.' });
+  }
+};
+
+
+
+module.exports ={createEvent,fetchEvents,postController, fetchUserSubmission}

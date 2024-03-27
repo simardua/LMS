@@ -10,7 +10,6 @@ const Navbar = () => {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [searchedCourse, setSearchedCourse] = useState([])
-  const [showCourses, setShowCourses] = useState(false); // State to control visibility of courses div
 
   let handleSignout = () => {
     navigate('/')
@@ -81,16 +80,21 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {search !="" && // Render courses div if showCourses is true
-        <div className="courses-div">
-          <h3>Searched Courses</h3>
-          <ul>
-            {searchedCourse.map(course => (
-              <li key={course.id}>{course.name}</li>
-            ))}
-          </ul>
-        </div>
-      }
+      <div style={{ position: 'fixed', width: '450px', height: 'auto', right: "10px", background: "white", padding: "5px" }}>
+        {search != "" ? <>
+          <div className="courses-div">
+            <h3>Searched Courses</h3>
+            <ul>
+              {searchedCourse.map(course => (
+                <li key={course.id}>{course.name}</li>
+              ))}
+            </ul>
+          </div>
+        </> : <></>
+
+        }
+      </div>
+
     </>
   )
 }
