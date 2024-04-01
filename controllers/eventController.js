@@ -17,8 +17,6 @@ const createEvent = async (req, res) => {
 }
 
 
-
-
 const fetchEvents=async(req,res)=>{
     const {courseId}=req.params;
     try{
@@ -96,6 +94,36 @@ const fetchUserSubmission = async (req, res) => {
   }
 };
 
+const getEventData=async(req,res)=>{
+  try{
+    const {eventId}=req.params;
+    const event=await eventModel.findOne({_id:eventId})
+    if(!event){
+      return res.status(400).send({message:'No event found',success:false})
+    }
+    return res.status(200).send({message:'event fetched',success:true,event})
+  }catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error.' });
+  }
+}
 
+const updateEventSubmissions=async(req,res)=>{
+  try{
+    const {submissions}=req.body;
+    const {eventId}=req.params;
+    const event=await eventModel.findOne({_id:eventId})
+    if(!event){
+      return res.status(400).send({success:false,message:'event not found'})
+    }
 
-module.exports ={createEvent,fetchEvents,postController, fetchUserSubmission}
+    event.submissions=submissions;
+    await event.save();
+    return res.status(200).send({success:true,message:'Marks upated successfully',event})
+
+  }catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error.' });
+  }
+}
+module.exports ={createEvent,fetchEvents,postController, fetchUserSubmission,getEventData,updateEventSubmissions}

@@ -15,6 +15,8 @@ import ManageCourses from "./components/admin/ManageCourses";
 import EditCourse from "./components/admin/EditCourse";
 import Attendance from "./components/Attendance";
 import UserAttendance from "./components/UserAttendance";
+import EventDetails from "./components/EventDetails";
+import Announcements from "./components/admin/Announcements";
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
         <Route path="/:courseId/course" Component={Course}/>
         <Route path="/:courseId/course/events" Component={CourseEvents}/>
         <Route path="/attendance/:courseId" Component={Attendance}/>
+        <Route path="/events/:eventId" Component={EventDetails}/>
         <Route path="/userAttendance/:courseId/:date" Component={UserAttendance} />
         <Route path="/mycourses" Component={MyCourses}/>
         <Route path="/admin" Component={AdminScreen}/>
@@ -36,6 +39,7 @@ function App() {
         <Route path="/admin/create-course" Component={CreateCourse}/>
         <Route path="/admin/manage-courses" Component={ManageCourses}/>
         <Route path="/admin/manage-courses/:courseId" Component={EditCourse}/>
+        <Route path="/admin/announcements" Component={Announcements}/>
       </Routes>
     </BrowserRouter>
   );

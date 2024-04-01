@@ -182,19 +182,19 @@ const CourseEvents = () => {
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="createAttendenceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Create a new Attendence</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div className="modal fade" id="createAttendenceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Create a new Attendence</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
+                        <div className="modal-body">
                             <DateTimePicker onChange={setAttendance} value={attendance} />
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onClick={() => createAttendance({ instructorId: localUser._id, date: attendance })}>Create</button>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary" onClick={() => createAttendance({ instructorId: localUser._id, date: attendance })}>Create</button>
                         </div>
                     </div>
                 </div>
@@ -222,20 +222,18 @@ const CourseEvents = () => {
                                     </button>
                                 </Link>
                             </h2>
-                            <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                                <div className="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
-                            </div>
                         </div>
                         {events.length > 0 && (
-                            events.map((item) => {
+                            events.map((item, index) => {
+                                const collapseId = `flush-collapse-${index}`;
                                 return (
-                                    <div className="accordion-item">
+                                    <div className="accordion-item" key={item._id}>
                                         <h2 className="accordion-header" id="flush-headingTwo">
-                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" onClick={() => fetchUserSubmission(item?._id)}>
+                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#${collapseId}`} aria-expanded="false" aria-controls={collapseId} onClick={() => fetchUserSubmission(item?._id)}>
                                                 {item?.eventName}
                                             </button>
                                         </h2>
-                                        <div id="flush-collapseTwo" className="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                                        <div id={collapseId} className="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
                                             <div className="accordion-body">
                                                 <div><p>{item?.eventDescription}</p></div>
 
@@ -247,57 +245,60 @@ const CourseEvents = () => {
                                                         <h6><b>Submitted at: </b>{singleSubmission.submission.submittedOn}</h6>
                                                         <p>Comments: {singleSubmission.submission.comments}</p>
                                                     </> : <>
+                                                        {localUser.accountType === 'Admin' || localUser.accountType === 'Instructor' ? <>
+                                                            <Link to={`/events/${item?._id}`}>View submissions</Link>
+                                                        </> : <>
+                                                            <div>
+                                                                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submissionModal">
+                                                                    Add Submission
+                                                                </button>
+                                                                <p>No submission yet.</p>
 
-                                                        <div>
-                                                            <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submissionModal">
-                                                                Add Submission
-                                                            </button>
-                                                            <p>No submissions yet.</p>
+                                                                {/* Modal */}
+                                                                <div className="modal fade" id="submissionModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                    <div className="modal-dialog">
+                                                                        <div className="modal-content">
+                                                                            <div className="modal-header">
+                                                                                <h1 className="modal-title fs-5" id="exampleModalLabel">Add Submission</h1>
+                                                                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                                                            </div>
+                                                                            <div className="modal-body">
 
-                                                            {/* Modal */}
-                                                            <div className="modal fade" id="submissionModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                <div className="modal-dialog">
-                                                                    <div className="modal-content">
-                                                                        <div className="modal-header">
-                                                                            <h1 className="modal-title fs-5" id="exampleModalLabel">Add Submission</h1>
-                                                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                                                        </div>
-                                                                        <div className="modal-body">
-
-                                                                            <input
-                                                                                type="file"
-                                                                                accept=".pdf,.doc,.docx,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                                                                name="document"
-                                                                                id="file"
-                                                                                style={{ display: 'none' }}
-                                                                                onChange={handleFileUpload}
-                                                                            />
-                                                                            <p>
-                                                                                <label htmlFor="file">Select a document</label>
-                                                                            </p>
-                                                                            {selectedDocument && <p>Selected document: {selectedDocument.name}</p>}
-
-
-                                                                            <label>
-                                                                                Comments:
-                                                                                <textarea
-                                                                                    name="comments"
-                                                                                    style={{ width: "470px", height: "250px" }}
-                                                                                    value={comments}
-                                                                                    onChange={(e) => setComments(e.target.value)}
+                                                                                <input
+                                                                                    type="file"
+                                                                                    accept=".pdf,.doc,.docx,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                                                    name="document"
+                                                                                    id="file"
+                                                                                    style={{ display: 'none' }}
+                                                                                    onChange={handleFileUpload}
                                                                                 />
-                                                                            </label>
+                                                                                <p>
+                                                                                    <label htmlFor="file">Select a document</label>
+                                                                                </p>
+                                                                                {selectedDocument && <p>Selected document: {selectedDocument.name}</p>}
 
 
-                                                                        </div>
-                                                                        <div className="modal-footer">
-                                                                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="button" className="btn btn-primary" onClick={() => updatePost(item?._id)} >Save changes</button>
+                                                                                <label>
+                                                                                    Comments:
+                                                                                    <textarea
+                                                                                        name="comments"
+                                                                                        style={{ width: "470px", height: "250px" }}
+                                                                                        value={comments}
+                                                                                        onChange={(e) => setComments(e.target.value)}
+                                                                                    />
+                                                                                </label>
+
+                                                                            </div>
+                                                                            <div className="modal-footer">
+                                                                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                <button type="button" className="btn btn-primary" onClick={() => updatePost(item?._id)} >Save changes</button>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </>}
+
                                                     </>}
                                                 </>}
                                             </div>

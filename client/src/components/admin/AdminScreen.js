@@ -18,7 +18,9 @@ const AdminScreen = () => {
                 <div>
                     <Link to="/admin/manage-courses">Manage Courses</Link>
                 </div>
-
+                <div>
+                    <Link to="/admin/announcements">Announcements</Link>
+                </div>
             </div>
         </>
     )

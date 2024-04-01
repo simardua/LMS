@@ -9,6 +9,7 @@ const eventSchema = new mongoose.Schema({
     eventDescription: { type: String, required: true, },
     startTime: { type: Date, required: true, },
     deadLine: { type: Date, required: true, },
+    maxGrade: { type: Number,  },
     submissions: [{
         submittedOn: {
             type: Date,
@@ -23,6 +24,9 @@ const eventSchema = new mongoose.Schema({
         },
         comments:{
             type:String
+        },
+        obtainedGrade:{
+            type:Number
         }
     }],
 },

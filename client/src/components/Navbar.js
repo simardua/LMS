@@ -80,13 +80,12 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <div style={{ position: 'fixed', width: '450px', height: 'auto', right: "10px", background: "white", padding: "5px" }}>
+      <div style={{ position: 'fixed', width: '450px', height: 'auto', right: "20px", background: "white", padding: "5px", marginLeft:"10px" }}>
         {search != "" ? <>
           <div className="courses-div">
-            <h3>Searched Courses</h3>
             <ul>
               {searchedCourse.map(course => (
-                <li key={course.id}>{course.name}</li>
+                <Link to={`./${course._id}/course`}><h5 key={course._id}>{course.coursecode} {course.coursename}</h5></Link>
               ))}
             </ul>
           </div>

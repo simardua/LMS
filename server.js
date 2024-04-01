@@ -25,6 +25,7 @@ app.use("/api/course", require("./routes/courseRoutes.js"));
 app.use("/api/attendance", require("./routes/attendenceRoutes.js"));
 app.use("/api/content", require('./routes/contentRoutes.js'))
 app.use("/api/event", require('./routes/eventRoutes.js'))
+app.use("/api/announcement", require('./routes/announcementRoutes.js'))
 
 const port = process.env.PORT || 5000;
 
