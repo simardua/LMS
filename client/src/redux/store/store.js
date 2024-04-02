@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { fetchUserReducer, fetchUserSearch, userReducer } from "../reducer/userReducer"
 import { courseReducer, courseSearchReducer } from "../reducer/courseReducer"
-import { announcementReducer } from "../reducer/announcementReducer"
+import { announcementReducer} from "../reducer/announcementReducer"
 
 const mystore= configureStore({
     reducer:{
@@ -10,7 +10,7 @@ const mystore= configureStore({
         searchedUser: fetchUserSearch,
         courses: courseReducer,
         searchedCourse: courseSearchReducer,
-        fetchAnnouncements: announcementReducer,
+        fetchAnnouncements: announcementReducer
     }
 })
 

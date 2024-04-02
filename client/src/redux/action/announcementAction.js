@@ -13,3 +13,4 @@ export const fetchAnnouncements = async(dispatch)=>{
         dispatch({type: FETCH_ANNOUNCEMENTS_FAIL, payload: error.res.data.error})
     }
 }
+

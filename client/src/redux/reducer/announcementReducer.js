@@ -1,4 +1,4 @@
-import { FETCH_ANNOUNCEMENTS_FAIL, FETCH_ANNOUNCEMENTS_REQUEST, FETCH_ANNOUNCEMENTS_SUCCESS } from "../action/announcementAction"
+import { FETCH_ANNOUNCEMENTS_FAIL, FETCH_ANNOUNCEMENTS_REQUEST, FETCH_ANNOUNCEMENTS_SUCCESS} from "../action/announcementAction"
 
 const initialAnnouncementState={
     announcements: [],
