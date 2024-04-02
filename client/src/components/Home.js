@@ -3,15 +3,17 @@ import { Link } from 'react-router-dom'
 import "./home.css"
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchAllCoursesAction } from '../redux/action/courseAction'
+import { fetchAnnouncements } from '../redux/action/announcementAction'
 
 const Home = () => {
     const dispatch = useDispatch()
     const allCourses = useSelector((state) => state.courses.courses)
+    const announcements = useSelector((state)=>state.fetchAnnouncements.announcements).announcements
     useEffect(() => {
         dispatch(fetchAllCoursesAction)
+        dispatch(fetchAnnouncements)
     }, [])
     const courses = allCourses.courses
-    console.log(courses)
     return (
         <>
             <div id='outer-main'>
