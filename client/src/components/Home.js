@@ -8,12 +8,13 @@ import { fetchAnnouncements } from '../redux/action/announcementAction'
 const Home = () => {
     const dispatch = useDispatch()
     const allCourses = useSelector((state) => state.courses.courses)
-    const announcements = useSelector((state)=>state.fetchAnnouncements.announcements).announcements
+    const announcements = useSelector((state) => state.fetchAnnouncements.announcements).announcements
     useEffect(() => {
         dispatch(fetchAllCoursesAction)
         dispatch(fetchAnnouncements)
     }, [])
     const courses = allCourses.courses
+    console.log(announcements)
     return (
         <>
             <div id='outer-main'>
@@ -42,11 +43,14 @@ const Home = () => {
                 <div>
                     <div id='announcements'>
                         <h4>Announcements</h4>
-                        <p>The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
-                            Line 33:17:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles.</p>
+
+                        <ul>
+                            {announcements && announcements.map((e) => {
+                                return <li key={e._id}><p><i style={{ color: "gray", fontSize: "12px" }}>{e.createdAt}</i> {e.announcement}</p></li>
+                            })}
+                        </ul>
                     </div>
                 </div>
-
             </div>
         </>
     )

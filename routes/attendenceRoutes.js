@@ -1,12 +1,13 @@
 const express = require('express')
 const { createAttendance, markAttendance, getAttendance, getUsers, updateAttendance, fetchSingleCourseStudentAttendance } = require('../controllers/attendenceController')
+const auth = require('../middlewares/authentication')
 const router = express.Router()
 
-router.post("/:courseId/create-attendance", createAttendance)
-router.post("/:attendanceId/mark-attendance", markAttendance)
-router.post("/get-attendance/:id", getAttendance)
-router.post("/getUsers/:id/:date",getUsers )
-router.post("/updateAttendance/:courseId/:id/:date",updateAttendance )
-router.post("/get-student-attendance/:courseId", fetchSingleCourseStudentAttendance)
+router.post("/:courseId/create-attendance",auth, createAttendance)
+router.post("/:attendanceId/mark-attendance", auth, markAttendance)
+router.post("/get-attendance/:id", auth, getAttendance)
+router.post("/getUsers/:id/:date",auth, getUsers )
+router.post("/updateAttendance/:courseId/:id/:date",auth, updateAttendance )
+router.post("/get-student-attendance/:courseId",auth, fetchSingleCourseStudentAttendance)
 
 module.exports=router

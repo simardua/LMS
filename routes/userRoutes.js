@@ -3,18 +3,19 @@ const multer = require('multer');
 const storage = multer.memoryStorage(); // Use memory storage for file upload
 const upload = multer({ storage: storage });
 const { userRegister, loginController, fetchAllUsers,getUser, fetchUser, signoutController, deleteUser, editUser, searchUser, createAttendance, uploadFileUrl } = require('../controllers/userController');
+const auth = require('../middlewares/authentication');
 
 const router = express.Router()
 
-router.post("/register", userRegister)
+router.post("/register",auth, userRegister)
 router.post("/login", loginController)
-router.get("/users", fetchAllUsers)
-router.get("/:userId",fetchUser)
+router.get("/users",auth, fetchAllUsers)
+router.get("/:userId",auth, fetchUser)
 router.post("/signout", signoutController)
-router.delete("/:userId/delete", deleteUser)
-router.put("/:userId/edit", editUser)
-router.get("/",searchUser)
-router.post('/getUser/:id',getUser)
+router.delete("/:userId/delete",auth, deleteUser)
+router.put("/:userId/edit",auth, editUser)
+router.get("/",auth, searchUser)
+router.post('/getUser/:id',auth, getUser)
 
 
 // router.post("/attendence", createAttendance)

@@ -56,7 +56,7 @@ const loginController = async(req,res)=>{
         console.log("token", token)
         user.token = token;
         res.cookie("token", token, {
-            expires: new Date(Date.now() + 100000 * 6),
+            expires: new Date(Date.now() + 600000),
             httponly: true,
         })
         const newUser = await user.save()
