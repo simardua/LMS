@@ -17,29 +17,31 @@ import Attendance from "./components/Attendance";
 import UserAttendance from "./components/UserAttendance";
 import EventDetails from "./components/EventDetails";
 import Announcements from "./components/admin/Announcements";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import { Component } from "react";
 
 function App() {
   return (
     <BrowserRouter>
-    <Navbar/>
+      <Navbar />
       <Routes>
-        <Route path="/" Component={Home}/>
-        <Route path="/login" Component={Login}/>
-        <Route path="/:courseId/course" Component={Course}/>
-        <Route path="/:courseId/course/events" Component={CourseEvents}/>
-        <Route path="/attendance/:courseId" Component={Attendance}/>
-        <Route path="/events/:eventId" Component={EventDetails}/>
+        <Route path="/" Component={Home} />
+        <Route path="/login" Component={Login} />
+        <Route path="/:courseId/course" Component={Course} />
+        <Route path="/:courseId/course/events" Component={CourseEvents} />
+        <Route path="/attendance/:courseId" Component={Attendance} />
+        <Route path="/events/:eventId" Component={EventDetails} />
         <Route path="/userAttendance/:courseId/:date" Component={UserAttendance} />
-        <Route path="/mycourses" Component={MyCourses}/>
-        <Route path="/admin" Component={AdminScreen}/>
-        <Route path="/admin/createuser" Component={CreateUser} />
-        <Route path="/admin/manageusers" Component={ManageUsers}/>
-        <Route path="/admin/manageUsers/:userId" Component={EditUser}/>
-        <Route path="/profile" Component={Profile}/>
-        <Route path="/admin/create-course" Component={CreateCourse}/>
-        <Route path="/admin/manage-courses" Component={ManageCourses}/>
-        <Route path="/admin/manage-courses/:courseId" Component={EditCourse}/>
-        <Route path="/admin/announcements" Component={Announcements}/>
+        <Route path="/mycourses" Component={MyCourses} />
+        <Route path="/profile" Component={Profile} />
+        <Route path="/admin" element={<ProtectedRoute Component={AdminScreen} />} />
+        <Route path="/admin/createuser" element={<ProtectedRoute Component={CreateUser}/>} />
+        <Route path="/admin/manageusers" element={<ProtectedRoute Component={ManageUsers}/>} />
+        <Route path="/admin/manageUsers/:userId" element={<ProtectedRoute Component={EditUser} />} />
+        <Route path="/admin/create-course" element={<ProtectedRoute Component={CreateCourse} />} />
+        <Route path="/admin/manage-courses" element={<ProtectedRoute Component={ManageCourses} />} />
+        <Route path="/admin/manage-courses/:courseId" element={<ProtectedRoute Component={EditCourse} />} />
+        <Route path="/admin/announcements" element={<ProtectedRoute Component={Announcements} />} />
       </Routes>
     </BrowserRouter>
   );

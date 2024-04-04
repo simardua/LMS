@@ -9,8 +9,10 @@ const Navbar = () => {
   const user = JSON.parse(localStorage.getItem("user"))
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
+  const [property, setProperty] = useState('')
   const [searchedCourse, setSearchedCourse] = useState([])
 
+  
   let handleSignout = () => {
     navigate('/')
     dispatch(signoutAction())
@@ -81,17 +83,20 @@ const Navbar = () => {
       </nav>
 
       <div style={{ position: 'fixed', width: '450px', height: 'auto', right: "20px", background: "white", padding: "5px", marginLeft:"10px" }}>
-        {search != "" ? <>
+        {search !== "" ? 
           <div className="courses-div">
             <ul>
               {searchedCourse.map(course => (
-                <Link to={`./${course._id}/course`}><h5 key={course._id}>{course.coursecode} {course.coursename}</h5></Link>
+                <Link to={`./${course._id}/course`} key={course._id}>
+                  <h5>{course.coursecode} {course.coursename}</h5>
+                </Link>
               ))}
             </ul>
           </div>
-        </> : <></>
-
+         : 
+          <div style={{ display: "none" }}></div>
         }
+
       </div>
 
     </>
