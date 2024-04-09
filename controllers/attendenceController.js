@@ -1,4 +1,3 @@
-const attendanceModel = require("../models/attendenceModel")
 const courseModel = require("../models/courseModel")
 const userModel = require("../models/userModel")
 

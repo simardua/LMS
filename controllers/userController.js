@@ -178,6 +178,45 @@ const getUser=async(req,res)=>{
     }
   }
 
+const editPicture = async (req, res) => {
+    const { Img } = req.body;
+    try {
+        const userId = req.params.id;
+        const user = await userModel.findOne({ _id: userId });
+        if (!user) {
+            return res.status(400).send({ success: false, message: 'User not found' });
+        }
+        user.userImg = Img;
+        await user.save(); // Wait for the save operation to complete
+        return res.status(200).send({ success: true, message: 'Profile picture updated', user });
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).send({ success: false, message: 'Internal Server error' });
+    }
+};
+
+
+const changePassword = async(req,res)=>{
+    const {currentPass, newPass}= req.body;
+    const {userId}= req.params
+    try {
+        let user = await userModel.findOne({_id:userId})
+        if (!user) {
+            return res.status(400).send({ success: false, message: 'User not found' });
+        }
+        const isMatch = await bcrypt.compare(currentPass, user.password);
+        if (!isMatch) {
+            return res.status(200).send({message: "Password doesn't match with current password", success:false})
+        }
+        const hashedNewPass = await bcrypt.hash(newPass, 10);
+        user.password = hashedNewPass;
+        await user.save()
+        return res.status(200).send({message:"Password Changed Successfully", success: true})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).send({ success: false, message: 'Internal Server error' });
+    }
+}
 
 // const createAttendance = async (req, res) => {
 //     const { course, date } = req.body;
@@ -227,4 +266,4 @@ const getUser=async(req,res)=>{
 //     }
 // };
 
-module.exports = { userRegister,getUser, loginController, fetchAllUsers, fetchUser, signoutController,deleteUser, editUser, searchUser};
+module.exports = { userRegister,getUser, loginController, fetchAllUsers, fetchUser, signoutController,deleteUser, editUser, searchUser, editPicture, changePassword};
