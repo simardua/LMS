@@ -18,7 +18,7 @@ import UserAttendance from "./components/UserAttendance";
 import EventDetails from "./components/EventDetails";
 import Announcements from "./components/admin/Announcements";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-import { Component } from "react";
+import CourseAccessRoute from "./components/ProtectedRoute/CourseAccessRoute";
 
 function App() {
   return (
@@ -27,8 +27,8 @@ function App() {
       <Routes>
         <Route path="/" Component={Home} />
         <Route path="/login" Component={Login} />
-        <Route path="/:courseId/course" Component={Course} />
-        <Route path="/:courseId/course/events" Component={CourseEvents} />
+        <Route path="/:courseId/course" element={<CourseAccessRoute Component={Course}/>} />
+        <Route path="/:courseId/course/events" element={<CourseAccessRoute Component={CourseEvents}/>}  />
         <Route path="/attendance/:courseId" Component={Attendance} />
         <Route path="/events/:eventId" Component={EventDetails} />
         <Route path="/userAttendance/:courseId/:date" Component={UserAttendance} />
