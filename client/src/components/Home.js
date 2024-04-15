@@ -26,8 +26,8 @@ const Home = () => {
                     <div className='d-flex flex-wrap' id='course-div' >
                         {courses && courses.length > 0 && courses.map((e) => (
                             <div className="card" style={{ width: '18rem', height: '250px' }} key={e._id}>
-                                <div id='course-info'>
-                                    <p>Teacher: {e.instructors[0].firstname}</p>
+                                <div id='course-info' style={{ backgroundImage: `url(${e.courseImage})`, objectFit:"contain" }}>
+                                    <p>Teacher: {e.instructors.length > 0 ? <>{e.instructors[0].firstname}</>:<></>} </p>
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">{e.coursecode} {e.coursename}</h5>

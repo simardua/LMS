@@ -5,6 +5,7 @@ import axios from 'axios';
 import UserBadge from '../miscellenious/UserBadge';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchCourse } from '../../redux/action/courseAction';
+import UploadWidget from '../miscellenious/UploadWidget';
 
 
 const EditCourse = () => {
@@ -17,6 +18,7 @@ const EditCourse = () => {
     const [coursename, setCoursename] = useState('')
     const [instructors, setInstructors] = useState('')
     const [students, setStudents] = useState('')
+    const [courseImage, setCourseImage] = useState('')
     const [searchedinstructors, setSearchedinstructors] = useState([])
     const [searchedstudents, setSearchedstudents] = useState([])
     const [selectedStudents, setSelectedStudents] = useState([])
@@ -36,6 +38,7 @@ const EditCourse = () => {
           setCoursename(memoizedCourse.coursename)
           setSelectedInstructors(memoizedCourse.instructors)
           setSelectedStudents(memoizedCourse.studentsEnrolled)
+          setCourseImage(memoizedCourse.courseImage)
       }
     }, [memoizedCourse])
     
@@ -105,6 +108,10 @@ const EditCourse = () => {
         await axios.delete(`http://localhost:5000/api/course/${courseId}`)
         navigate('/admin/manage-courses')
     }
+    const media_url = (data) => {
+        setCourseImage(data)
+        console.log(data)
+    }
 
     return (
         <>
@@ -117,6 +124,14 @@ const EditCourse = () => {
 
                         <label>Course Name:</label>
                         <input type='text' value={coursename} onChange={(e) => setCoursename(e.target.value)} />
+
+                        <div>
+                            <label>Image:</label>
+                            <p>{courseImage}</p>
+                            <UploadWidget func={media_url} />
+
+                        </div>
+
 
                         <label>Instructors:</label>
                         <input type='text' value={instructors} onChange={(e) => setInstructors(e.target.value)} />
@@ -176,7 +191,7 @@ const EditCourse = () => {
                     <div className='d-flex justify-content-around'>
                         <button className='btn btn-primary' data-bs-toggle="modal" data-bs-target="#ConfirmDelete">Delete Course</button>
                         <button className='btn btn-primary' onClick={() => navigate("/admin/manage-courses")}>Cancel</button>
-                        <button className='btn btn-primary' onClick={() => editRequest({ coursecode: coursecode, coursename: coursename,  instructors: selectedInstructors, studentsEnrolled: selectedStudents })}>Save Changes</button>
+                        <button className='btn btn-primary' onClick={() => editRequest({ coursecode: coursecode, coursename: coursename, courseImage: courseImage,  instructors: selectedInstructors, studentsEnrolled: selectedStudents })}>Save Changes</button>
 
                         <div class="modal fade" id="ConfirmDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">

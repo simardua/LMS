@@ -11,34 +11,11 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [errors, setErrors] = useState({});
-    const success = useSelector((state) => state.user.success);
-    const error = useSelector((state) => state.user.error);
-
-    const validateForm = () => {
-        let errors = {};
-        let isValid = true;
-
-        if (!email.trim()) {
-            errors.email = 'Email is required';
-            isValid = false;
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
-            errors.email = 'Email is invalid';
-            isValid = false;
-        }
-
-        if (!password.trim()) {
-            errors.password = 'Password is required';
-            isValid = false;
-        }
-
-        setErrors(errors);
-        return isValid;
-    };
+    // const success = useSelector((state) => state.user.success);
+    // const error = useSelector((state) => state.user.error);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validateForm()) {
             try {
                 const res = await dispatch(loginAction({ email: email, password: password }));
                 if (res.data.success) {
@@ -49,7 +26,7 @@ const Login = () => {
             } catch (err) {
                 toast.error('Invalid credentials. Please try again.');
             }
-        }
+        
     };
 
     const togglePasswordVisibility = () => {
@@ -64,7 +41,7 @@ const Login = () => {
     
     return (
         <>
-            <Toaster position='top-center' />
+            <Toaster richColors position='bottom-right' />
             <div className="login-container">
                 <form className="login-form" onSubmit={handleSubmit}>
                     <h2>Login</h2>
@@ -76,7 +53,6 @@ const Login = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
-                        {errors.email && <span className="error">{errors.email}</span>}
                     </div>
                     <div className="form-group">
                         <label>Password:</label>
@@ -90,7 +66,6 @@ const Login = () => {
                             <i className={showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'} onClick={togglePasswordVisibility} />
                             
                         </div>
-                        {errors.password && <span className="error">{errors.password}</span>}
                     </div>
                     <button type="submit">Login</button>
                 </form>

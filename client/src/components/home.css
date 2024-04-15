@@ -41,8 +41,6 @@
     border: 1px solid gray;
     border-radius: 15px;
     overflow: hidden;
-    background-image: url("./media/download.jpeg");
-    object-fit: contain;
 }
 
 #course-info p {

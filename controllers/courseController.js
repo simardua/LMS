@@ -1,14 +1,14 @@
 const courseModel = require("../models/courseModel")
 
 const createCourse=async(req,res)=>{
-    const{coursecode, coursename, instructors, studentsEnrolled}=req.body
+    const{coursecode, coursename,courseImage, instructors, studentsEnrolled}=req.body
     try {
         const course = await courseModel.findOne({coursecode})
         if(course){
             res.status(200).send({message: "Course Already Exist", success: false})
         }else{
             const newCourse = await courseModel.create({
-                coursecode, coursename, instructors, studentsEnrolled
+                coursecode, coursename, courseImage, instructors, studentsEnrolled
             })
             return res.status(200).send({ message: "Course Created Successfully", success: true, newCourse })
         }
@@ -76,11 +76,11 @@ const searchCourse = async (req, res) => {
 
 const editCourse =async(req,res)=>{
     const {courseId}=req.params
-    const {coursecode, coursename, instructors, studentsEnrolled}=req.body
+    const {coursecode, coursename, courseImage, instructors, studentsEnrolled}=req.body
     try {
         const course = await courseModel.updateOne({_id : courseId},{
             $set:
-            {coursecode:coursecode, coursename:coursename, instructors: instructors, studentsEnrolled: studentsEnrolled}
+            {coursecode:coursecode, coursename:coursename, courseImage: courseImage, instructors: instructors, studentsEnrolled: studentsEnrolled}
         })
         if (!course) {
             return res.status(404).send({message:"course not found", success: false})

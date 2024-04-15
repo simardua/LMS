@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { searchUserAction } from '../../redux/action/userAction';
 import axios from 'axios';
 import UserBadge from '../miscellenious/UserBadge';
+import UploadWidget from '../miscellenious/UploadWidget';
 
 
 const CreateCourse = () => {
@@ -13,6 +14,7 @@ const CreateCourse = () => {
     const [coursename, setCoursename] = useState('')
     const [instructors, setInstructors] = useState('')
     const [students, setStudents] = useState('')
+    const [courseImage, setCourseImage] = useState('')
     const [searchedinstructors, setSearchedinstructors] = useState([])
     const [searchedstudents, setSearchedstudents] = useState([])
     const [selectedStudents, setSelectedStudents] = useState([])
@@ -85,8 +87,13 @@ const CreateCourse = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const res = await axios.post("http://localhost:5000/api/course/create-course", { coursecode: coursecode, coursename: coursename, instructors: selectedInstructors, studentsEnrolled: selectedStudents })
+        const res = await axios.post("http://localhost:5000/api/course/create-course", { coursecode: coursecode, coursename: coursename, courseImage: courseImage, instructors: selectedInstructors, studentsEnrolled: selectedStudents })
         console.log(res)
+    }
+
+    const media_url = (data) => {
+        setCourseImage(data)
+        console.log(data)
     }
     return (
         <>
@@ -99,7 +106,12 @@ const CreateCourse = () => {
 
                         <label>Course Name:</label>
                         <input type='text' value={coursename} onChange={(e) => setCoursename(e.target.value)} />
+                        <div>
+                            <label>Image:</label>
+                            <p>{courseImage}</p>
+                            <UploadWidget func={media_url} />
 
+                        </div>
                         <label>Instructors:</label>
                         <input type='text' value={instructors} onChange={(e) => setInstructors(e.target.value)} />
                         <div className='d-flex flex-wrap w-auto'>

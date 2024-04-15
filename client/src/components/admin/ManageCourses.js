@@ -49,7 +49,7 @@ const ManageCourses = () => {
                 <div id='user' key={e._id}>
                   <div div='user-name'>
                     <h5>{e.coursecode} {e.coursename}</h5>
-                    <p>{e.instructors[0].firstname}</p>
+                    <p>{e.instructors?.length > 0 ? <>{e.instructors[0].firstname}</>:<></>}</p>
                   </div>
                   <div id='user-edit'>
                     <Link to={`/admin/manage-courses/${e._id}`}>edit</Link>
@@ -63,7 +63,7 @@ const ManageCourses = () => {
                 <div id='user' key={e._id}>
                   <div div='user-name'>
                     <h5>{e.coursecode} {e.coursename}</h5>
-                    <p>{e.instructors[0].firstname}</p>
+                    <p>{e.instructors?.length > 0 ? <>{e.instructors[0].firstname}</> : <></>}</p>
                   </div>
                   <div id='user-edit'>
                     <Link to={`/admin/manage-courses/${e._id}`}>edit</Link>
