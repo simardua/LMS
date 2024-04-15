@@ -37,7 +37,7 @@ function App() {
         <Route path="/admin" element={<ProtectedRoute Component={AdminScreen} />} />
         <Route path="/admin/createuser" element={<ProtectedRoute Component={CreateUser}/>} />
         <Route path="/admin/manageusers" element={<ProtectedRoute Component={ManageUsers}/>} />
-        <Route path="/admin/manageUsers/:userId" element={<ProtectedRoute Component={EditUser} />} />
+        <Route path="/admin/manageUsers/:userId" element={<EditUser/>} />
         <Route path="/admin/create-course" element={<ProtectedRoute Component={CreateCourse} />} />
         <Route path="/admin/manage-courses" element={<ProtectedRoute Component={ManageCourses} />} />
         <Route path="/admin/manage-courses/:courseId" element={<ProtectedRoute Component={EditCourse} />} />

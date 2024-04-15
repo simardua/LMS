@@ -20,7 +20,7 @@ export const userReducer = (state = initialUserState, action) => {
         case LOGIN_SUCCESS:
             return { ...state, isLoading: false, user: action.payload, success: "User login successful" }
         case LOGIN_FAIL:
-            return { ...state, isLoading: false, error: action.payload }
+            return { ...state, isLoading: false, error: action.payload.message }
         case SIGNOUT_REQUEST:
             return { ...state, isLoading: true }
         case SIGNOUT_SUCCESS:
@@ -57,7 +57,7 @@ export const fetchUserReducer=(state=initialAllUserState, action)=>{
         case FETCH_ALL_USERS_REQUEST:
             return {...state, isLoading: true}
         case FETCH_ALL_USERS_SUCCESS:
-            return {...state, isLoading: false, users: action.payload, success:"Users Fetched Successfully"}
+            return {...state,  users: action.payload, success:"Users Fetched Successfully"}
         case FETCH_ALL_USERS_FAIL:
             return {...state, isLoading: false, error: action.payload}
         default:

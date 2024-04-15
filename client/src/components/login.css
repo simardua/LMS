@@ -50,3 +50,23 @@ button {
 button:hover {
     background-color: #3d1d4a;
 }
+
+.password-input {
+    position: relative;
+    display: inline-block;
+    /* or flex or inline-flex, based on your layout */
+}
+
+.password-input input {
+    padding-right: 30px;
+    /* Adjust the padding to accommodate the icon */
+}
+
+.password-input i {
+    position: absolute;
+    top: 40%;
+    right: 5px;
+    /* Adjust the distance from the right */
+    transform: translateY(-50%);
+    cursor: pointer;
+}

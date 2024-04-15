@@ -85,7 +85,7 @@ const CreateCourse = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const res = await axios.post("http://localhost:5000/api/course/create-course", {coursecode: coursecode, coursename: coursename, instructors: selectedInstructors, studentsEnrolled: selectedStudents})
+        const res = await axios.post("http://localhost:5000/api/course/create-course", { coursecode: coursecode, coursename: coursename, instructors: selectedInstructors, studentsEnrolled: selectedStudents })
         console.log(res)
     }
     return (

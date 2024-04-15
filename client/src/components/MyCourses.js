@@ -11,7 +11,6 @@ const MyCourses = () => {
         dispatch(userAction(id))
     }, [])
     const myCourses= user.user?.courses
-    console.log(myCourses)
     return (
         <>
             <div className='main'>
@@ -27,7 +26,7 @@ const MyCourses = () => {
                             </div>
                             <div className="card-body">
                                 <h5 className="card-title">{e.coursecode} {e.coursename}</h5>
-                                <Link to="/course" className="btn" id='course-btn'>Course</Link>
+                                <Link to={`/${e._id}/course`} className="btn" id='course-btn'>Course</Link>
                             </div>
                         </div>
                     ))}
