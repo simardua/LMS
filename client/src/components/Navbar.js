@@ -23,7 +23,7 @@ const Navbar = () => {
     const courseSearch = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/course/?search=${search}`);
-        const courseSearchResults = response.data.courses;
+        const courseSearchResults = response.data.courses.slice(0,3);
         setSearchedCourse(courseSearchResults);
       } catch (error) {
         console.error('Error fetching searched courses:', error);
@@ -37,7 +37,7 @@ const Navbar = () => {
     <>
       <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: "#66317d" }}>
         <div className="container-fluid">
-          <Link className="navbar-brand text-light" to="/">LMS</Link>
+          <Link className="navbar-brand text-light" to="/"><img style={{height:"50px", marginLeft:"15px"}} src="logo.png"/></Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon" />
           </button>
@@ -82,22 +82,32 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <div style={{ position: 'fixed', width: '450px', height: 'auto', right: "20px", background: "white", padding: "5px", marginLeft:"10px" }}>
-        {search !== "" ? 
-          <div className="courses-div">
-            <ul>
-              {searchedCourse.map(course => (
-                <Link to={`./${course._id}/course`} key={course._id}>
-                  <h5>{course.coursecode} {course.coursename}</h5>
-                </Link>
-              ))}
+      <div style={{ position: 'fixed', width: '450px', height: 'auto', right: "20px", background: "white", padding: "5px", marginLeft: "10px"}}>
+        {search !== "" ?
+          <div className="courses-div" style={{ padding: "15px", width: "100%", border: "1px solid #ccc", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              {searchedCourse.length > 0 ? (
+                searchedCourse.map(course => (
+                  <li key={course._id} style={{ marginBottom: "10px", borderBottom: "1px solid #eee", transition: "background-color 0.3s" }}>
+                    <Link to={`./${course._id}/course`} style={{ display: "flex", alignItems: "center", textDecoration: "none", color: "#333", ":hover": { backgroundColor: "#66317d" } }}>
+                      <div style={{ flex: "1" }}>
+                        <h5 style={{ margin: 0 }}>{course.coursecode} {course.coursename}</h5>
+                      </div>
+                      <div style={{ height: "50px", width: "85px", backgroundImage: `url(${course.courseImage})`, backgroundSize: "cover", marginLeft: "10px" }}>
+                      </div>
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li>No course found</li>
+              )}
             </ul>
           </div>
-         : 
-          <div style={{ display: "none" }}></div>
-        }
-
+          : null}
       </div>
+
+
+
 
     </>
   )

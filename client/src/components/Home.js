@@ -4,10 +4,13 @@ import "./home.css"
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchAllCoursesAction } from '../redux/action/courseAction'
 import { fetchAnnouncements } from '../redux/action/announcementAction'
+import { Toaster, toast } from 'sonner'
 
 const Home = () => {
     const dispatch = useDispatch()
     const allCourses = useSelector((state) => state.courses.courses)
+    const success = useSelector((state)=>state.courses.success)
+    const error = useSelector((state) => state.courses.error)
     const announcements = useSelector((state) => state.fetchAnnouncements.announcements).announcements
     useEffect(() => {
         dispatch(fetchAllCoursesAction)
@@ -15,8 +18,16 @@ const Home = () => {
     }, [])
     const courses = allCourses.courses
     console.log(announcements)
+    // useEffect(() => {
+    //     if (success) {
+    //         toast.success(success);
+    //     } else if (error) {
+    //         toast.error(error);
+    //     }
+    // }, [success, error]);
     return (
         <>
+            <Toaster richColors position='top-center' />
             <div id='outer-main'>
                 <div className='main'>
                     <div className='heading'>

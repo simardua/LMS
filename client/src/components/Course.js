@@ -25,6 +25,7 @@ const Course = () => {
         url: '',
         file: '',
         media: '',
+        videoUrl:'',
     });
 
     const handleChange = (e) => {
@@ -63,13 +64,14 @@ const Course = () => {
 
     const handleCreateContent = async (e) => {
         e.preventDefault();
-        await axios.post(`http://localhost:5000/api/content/${courseId}/add-content`, { heading: formData.heading, description: formData.description, URL: formData.url, file: formData.file, media: formData.media });
+        await axios.post(`http://localhost:5000/api/content/${courseId}/add-content`, { heading: formData.heading, description: formData.description, URL: formData.url, file: formData.file, media: formData.media, videoUrl: extractVideoId(formData.videoUrl) });
         setFormData({
             heading: '',
             description: '',
             url: [],
             file: null,
             media: null,
+            videoUrl: null,
         });
     };
 
@@ -79,6 +81,17 @@ const Course = () => {
             media: data
         }))
         console.log(data)
+    }
+
+    function extractVideoId(url) {
+        // Regular expression to match YouTube video IDs
+        var regExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+
+        // Try to match the URL with the regular expression
+        var match = url.match(regExp);
+
+        // If a match is found, return the video ID, otherwise return null
+        return match ? match[1] : null;
     }
 
     return (
@@ -160,6 +173,16 @@ const Course = () => {
                                     <p> {formData.media}</p>
                                     <UploadWidget func={media_url} />
                                 </div>
+                                <div>
+                                    <label htmlFor='videoUrl'>Video Url:</label>
+                                    <input
+                                        type="url"
+                                        id="videoUrl"
+                                        name="videoUrl"
+                                        value={formData.videoUrl}
+                                        onChange={handleChange}
+                                    />
+                                </div>
                             </form>
                         </div>
                         <div className="modal-footer">
@@ -191,13 +214,14 @@ const Course = () => {
                                     </button>
                                 </h2>
                                 <div id={`collapse${index}`} className={`accordion-collapse collapse ${openAccordion === index ? 'show' : ''}`} aria-labelledby={`heading${index}`} data-bs-parent="#accordionFlushExample">
-                                    <div className="accordion-body">
-                                        <p>{content.description}</p>
-                                        <a href={content.URL}>{content.URL}</a>
-                                        {content.file?.includes('.pdf') ? <>
-                                            <a href={content.file}>Pdf file</a>
-                                        </> : <></>}
+                                    <div className="accordion-body" style={{ padding: "10px", backgroundColor: "#f5f5f5", borderRadius: "5px", marginBottom: "10px" }}>
+                                        <p style={{ fontSize: "16px", color: "#333", marginBottom: "10px" }}>{content.description}</p>
+                                        <a href={content.URL} style={{ textDecoration: "none", color: "#007bff", display: "block", marginBottom: "5px" }}>{content.URL}</a>
+                                        {content.file?.includes('.pdf') ? <a href={content.file} style={{ textDecoration: "none", color: "#007bff", display: "block", marginBottom: "5px" }}>Pdf file</a> : null}
+                                        {content.media !== '' ? <img src={content.media} style={{ height: "50px", width: "50px", borderRadius: "5px", marginBottom: "5px" }} /> : null}
+                                        {content.videoUrl !== null ? <iframe width="560" height="315" src={`https://www.youtube.com/embed/${content.videoUrl}`} frameborder="0" allowfullscreen style={{ borderRadius: "5px" }}></iframe> : null}
                                     </div>
+
                                 </div>
                             </div>
                         </div>

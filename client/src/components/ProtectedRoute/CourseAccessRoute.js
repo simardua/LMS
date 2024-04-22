@@ -18,7 +18,7 @@ const CourseAccessRoute = (props) => {
 
   useEffect(() => {
     const isEnrolled = user?.courses.some(course => course._id === courseId);
-    if (isEnrolled) {
+    if (isEnrolled || user?.accountType =="Admin") {
       setCourseEnrolled(true)
     }
   }, [user])

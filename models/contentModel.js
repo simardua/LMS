@@ -15,6 +15,9 @@ const contentSchema = new mongoose.Schema({
     media:{
         type: String
     },
+    videoUrl:{
+        type: String
+    }
 },
 {timestamps:true}
 )

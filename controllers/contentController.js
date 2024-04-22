@@ -3,7 +3,7 @@ const courseModel = require("../models/courseModel");
 
 const addContent = async (req, res) => {
     const { courseId } = req.params;
-    const { heading, description, URL, file, media } = req.body;
+    const { heading, description, URL, file, media, videoUrl } = req.body;
 
     try {
         // Check if the course exists
@@ -22,7 +22,8 @@ const addContent = async (req, res) => {
             description,
             URL,
             file,
-            media
+            media,
+            videoUrl
         });
 
         // Push new content to the course and save the course
