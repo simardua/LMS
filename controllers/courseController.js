@@ -1,24 +1,84 @@
 const courseModel = require("../models/courseModel")
+const userModel = require("../models/userModel");
 
-const createCourse=async(req,res)=>{
-    const{coursecode, coursename,courseImage, instructors, studentsEnrolled}=req.body
+const createCourse = async (req, res) => {
+    const { coursecode, coursename, instructors, studentsEnrolled } = req.body;
     try {
-        const course = await courseModel.findOne({coursecode})
-        if(course){
-            res.status(200).send({message: "Course Already Exist", success: false})
-        }else{
-            const newCourse = await courseModel.create({
-                coursecode, coursename, courseImage, instructors, studentsEnrolled
-            })
-            return res.status(200).send({ message: "Course Created Successfully", success: true, newCourse })
+        const course = await courseModel.findOne({ coursecode });
+        if (course) {
+            return res.status(200).send({ message: "Course Already Exists", success: false });
+        } else {
+            const newCourse = await courseModel.create({ coursecode, coursename, instructors, studentsEnrolled });
+
+
+            for (const studentId of studentsEnrolled) {
+                const user = await userModel.findOne({ _id: studentId });
+                if (user) {
+                    user.courses.push(newCourse._id);
+                    await user.save();
+                }
+            }
+            return res.status(200).send({ message: "Course Created Successfully", success: true, newCourse });
         }
-        
     } catch (error) {
         console.log(error);
         return res.status(500).send({
             success: false,
-            message: `Register Controller ${error.message}`,
+            message: `Register Controller ${ error.message }`,
         });
+}
+};
+
+const editCourse = async (req, res) => {
+    const { courseId } = req.params;
+    const { coursecode, coursename, instructors, studentsEnrolled } = req.body;
+    try {
+        const oldCourse = await courseModel.findOne({ _id: courseId });
+
+        if (!oldCourse) {
+            return res.status(404).send({ message: "Course not found", success: false });
+        }
+
+        const updatedCourse = await courseModel.updateOne({ _id: courseId }, {
+            $set: { coursecode, coursename, instructors, studentsEnrolled }
+        });
+
+        if (!updatedCourse) {
+            return res.status(404).send({ message: "Course not found", success: false });
+        }
+
+        const removedStudents = oldCourse.studentsEnrolled.filter(studentId => !studentsEnrolled.includes(studentId));
+        const addedStudents = studentsEnrolled.filter(studentId => !oldCourse.studentsEnrolled.includes(studentId));
+        console.log('remove', removedStudents)
+        console.log('added', addedStudents)
+        // Remove courses from removed students
+        for (const studentId of removedStudents) {
+            const user = await userModel.findOne({ _id: studentId });
+            if (user) {
+                user.courses = user.courses.filter(course => course.toString() !== courseId);
+                await user.save();
+            }
+        }
+
+        // Add courses for new students enrolled
+        for (const studentId of addedStudents) {
+            const user = await userModel.findOne({ _id: studentId });
+            if (user) {
+                user.courses.push(courseId);
+                await user.save();
+            }
+        }
+
+        return res.status(200).send({
+            success: true,
+            message: "Course edited successfully",
+            removedStudents,
+            addedStudents,
+            course: updatedCourse
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ success: false, message: 'Internal Server Error' });
     }
 }
 
@@ -73,23 +133,6 @@ const searchCourse = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error', success: false, error });
     }
 };
-
-const editCourse =async(req,res)=>{
-    const {courseId}=req.params
-    const {coursecode, coursename, courseImage, instructors, studentsEnrolled}=req.body
-    try {
-        const course = await courseModel.updateOne({_id : courseId},{
-            $set:
-            {coursecode:coursecode, coursename:coursename, courseImage: courseImage, instructors: instructors, studentsEnrolled: studentsEnrolled}
-        })
-        if (!course) {
-            return res.status(404).send({message:"course not found", success: false})
-        }
-        return res.status(200).send({success:true, message:"course edited", course})
-    } catch (error) {
-        return res.status(500).send({ success: false, message: 'Internal Server Error' })
-    }
-}
 
 const deleteCourse = async(req,res)=>{
     const {courseId} = req.params

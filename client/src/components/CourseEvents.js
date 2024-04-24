@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import DateTimePicker from 'react-datetime-picker';
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
@@ -8,6 +7,11 @@ import axios from 'axios';
 import firebase from 'firebase/compat/app';
 import "firebase/compat/storage"
 import { useSelector } from 'react-redux';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import Loader from './miscellenious/Loader.js'
 
 const CourseEvents = () => {
     const { courseId } = useParams();
@@ -105,6 +109,20 @@ const CourseEvents = () => {
         setLoading(false)
     }
 
+    const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric"
+    };
+    const getLocalDateString = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleString("en-US", options); // Adjust options as needed for format
+    };
+
 
     useEffect(() => {
         fetchEvents()
@@ -162,16 +180,24 @@ const CourseEvents = () => {
                                 </label>
                                 <label>
                                     Start Time:
-                                    <DateTimePicker
-                                        name="startTime"
-                                        onChange={setStartTime}
-                                        value={startTime}
-                                    />
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DemoContainer components={['DateTimePicker']}>
+                                            <DateTimePicker label="Start Time"
+                                                value={startTime}
+                                                onChange={(newValue) => setStartTime(newValue)} />
+                                        </DemoContainer>
+                                    </LocalizationProvider>
 
                                 </label>
                                 <label>
                                     Deadline:
-                                    <DateTimePicker name='deadLine' onChange={setDeadLine} value={deadLine} />
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DemoContainer components={['DateTimePicker']}>
+                                            <DateTimePicker label="Dead Line"
+                                                value={deadLine}
+                                                onChange={(newValue) => setDeadLine(newValue)} />
+                                        </DemoContainer>
+                                    </LocalizationProvider>
                                 </label>
                             </form>
                         </div>
@@ -190,7 +216,13 @@ const CourseEvents = () => {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <DateTimePicker onChange={setAttendance} value={attendance} />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DemoContainer components={['DateTimePicker']}>
+                                    <DateTimePicker label="Attendance"
+                                        value={attendance}
+                                        onChange={(newValue) => setAttendance(newValue)} />
+                                </DemoContainer>
+                            </LocalizationProvider>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -237,12 +269,13 @@ const CourseEvents = () => {
                                             <div className="accordion-body">
                                                 <div><p>{item?.eventDescription}</p></div>
 
-                                                <h6><b>Created on:</b> {item?.startTime}</h6>
-                                                <h6><b>Deadline:</b> {item?.deadLine}</h6>
-                                                {loading ? <>loading....</> : <>
+                                                <h6><b>Created on:</b> {getLocalDateString(item?.startTime)}</h6>
+                                                <h6><b>Deadline:</b> {getLocalDateString(item?.deadLine)}</h6>
+                                                {loading ? <><Loader/></> : <>
                                                     {singleSubmission && singleSubmission.success ? <>
                                                         <h6><b>Submitted File: </b><Link to={singleSubmission.submission.fileUrl}>file</Link></h6>
-                                                        <h6><b>Submitted at: </b>{singleSubmission.submission.submittedOn}</h6>
+                                                        <h6><b>Submitted at: </b>{getLocalDateString(singleSubmission.submission.submittedOn)}</h6>
+                                                        <h6><b>Marks: </b>{singleSubmission.submission.obtainedGrade ? <>{singleSubmission.submission.obtainedGrade}</>:<>not graded yet</>}</h6>
                                                         <p>Comments: {singleSubmission.submission.comments}</p>
                                                     </> : <>
                                                         {localUser.accountType === 'Admin' || localUser.accountType === 'Instructor' ? <>

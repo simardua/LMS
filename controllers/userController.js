@@ -4,7 +4,7 @@ const jwt = require("../node_modules/jsonwebtoken")
 
 
 const userRegister = async (req, res) => {
-    let { firstname, lastname, email, password, confirmpassword, accountType, branch, courses } = req.body;
+    let { firstname, lastname, email, password, accountType, branch, courses } = req.body;
     try {
         const existingUser = await userModel.findOne({ email });
 

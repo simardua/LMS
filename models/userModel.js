@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
         unique: true,
         max: 70,
     },
-    userImg:{
+    userImg: {
         type: String
     },
     password: {
@@ -25,14 +25,13 @@ const userSchema = new mongoose.Schema({
         min: 8,
     },
     branch: {
-        type: String,
-        required: true
+        type: String
     },
     accountType: {
         type: String,
         enum: ["Admin", "Student", "Instructor"],
         required: true,
-        default:"Student"
+        default: "Student"
     },
     courses: [{
         type: mongoose.Schema.Types.ObjectId,

@@ -18,6 +18,16 @@ const Home = () => {
     }, [])
     const courses = allCourses.courses
     console.log(announcements)
+    const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    };
+    const getLocalDateString = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleString("en-US", options); // Adjust options as needed for format
+    };
     // useEffect(() => {
     //     if (success) {
     //         toast.success(success);
@@ -57,7 +67,7 @@ const Home = () => {
 
                         <ul>
                             {announcements && announcements.map((e) => {
-                                return <li key={e._id}><p><i style={{ color: "gray", fontSize: "12px" }}>{e.createdAt}</i> {e.announcement}</p></li>
+                                return <li key={e._id}><p><i style={{ color: "gray", fontSize: "12px" }}>{getLocalDateString(e.createdAt)}</i><br/> {e.announcement}</p></li>
                             })}
                         </ul>
                     </div>

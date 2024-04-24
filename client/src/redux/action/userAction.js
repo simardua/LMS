@@ -50,6 +50,8 @@ export const signoutAction = () => async (dispatch) => {
         localStorage.clear()
         const response = await axios.post("http://localhost:5000/api/user/signout");
         console.log(response)
+        dispatch({ type: SIGNOUT_SUCCESS });
+        window.location.href = '/'; 
     } catch (error) {
         dispatch({ type: SIGNOUT_FAIL, payload: error.response.data.error })
     }

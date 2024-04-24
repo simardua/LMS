@@ -1,87 +1,46 @@
 const courseModel = require("../models/courseModel")
 const userModel = require("../models/userModel")
 
-
 const createAttendance = async (req, res) => {
     const { courseId } = req.params;
     const { studentId, date } = req.body;
-    // console.log(req.body)
-    // console.log(req.params)
-
-
     try {
         const course = await courseModel.findOne({ _id: courseId });
         if (!course) {
             return res.status(404).json({ message: "Course not found", success: false });
         }
+
+        // Ensure studentsEnrolled is populated
+        const students = await userModel.find({ _id: { $in: course.studentsEnrolled } });
+        course.studentsEnrolled = students.map(student => student._id);
+
         let attendanceExists = false;
-        // console.log(course)
         const existingAttendance = course.attendance.find(item => {
-            // Parse the date string from the attendance object and the date variable
             const itemDate = new Date(item.date);
             const currentDate = new Date(date);
-        
-            // Compare the parsed Date objects
             return itemDate.getTime() === currentDate.getTime();
         });
         console.log(existingAttendance)
-     
-
-        // If attendance already exists, return error
         if (existingAttendance) {
             return res.status(400).json({ success: false, message: 'Attendance already created' });
         }
-
-        // If not, push the new attendance record
         course.attendance.push({ date: date });
 
-
-        const students = course.studentsEnrolled;
-        // console.log(students)
-
         await Promise.all(students.map(async (student) => {
-            const user = await userModel.findOne({ _id: student });
-            if (!user) {
-                throw new Error("Student not found");
-            }
-        
-            // console.log('User:', user);
-            // console.log('Course ID:', courseId);
-            let courseAttendance = user.courseAttendances.find(attendance => attendance.course.toString() === courseId.toString());
-            // console.log('Course attendance:', courseAttendance);
-            
+            let courseAttendance = student.courseAttendances.find(attendance => attendance.course.toString() === courseId.toString());
             if (!courseAttendance) {
-                // If courseAttendance doesn't exist, initialize it
-                // console.log('Before initialization');
                 courseAttendance = { course: courseId, attendance: [] };
-                user.courseAttendances.push(courseAttendance);
-                // console.log('After initialization');
+                student.courseAttendances.push(courseAttendance);
             }
-            
-            // console.log('After checking existence');
-            
             let attendanceRecord = courseAttendance.attendance.find(attend => attend.date === date);
-            // console.log('Attendance record:', attendanceRecord);
-            
             if (attendanceRecord) {
                 throw new Error("Attendance already created for this date");
             }
-            
-            // Initialize attendanceRecord if it doesn't exist
             if (!attendanceRecord) {
                 attendanceRecord = { date: date, isPresent: false };
                 courseAttendance.attendance.push(attendanceRecord);
             }
-            
-            // console.log('Before saving user');
-            
-            // Save the user with updated courseAttendance
-            await user.save();
-            
-            // console.log('After saving user');
-            
-
-            
+            await student.save();
         }));
         await course.save()
 
