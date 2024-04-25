@@ -1,6 +1,7 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("../node_modules/jsonwebtoken")
+const courseModel = require("../models/courseModel")
 
 
 const userRegister = async (req, res) => {
@@ -11,10 +12,11 @@ const userRegister = async (req, res) => {
         if (existingUser) {
             return res.status(200).send({ message: "User Already Exists", success: false });
         }
-        
+
         const hashedPassword = await bcrypt.hash(password, 10);
         password = hashedPassword;
 
+        // Create the new user
         const newUser = await userModel.create({
             firstname,
             lastname,
@@ -24,6 +26,18 @@ const userRegister = async (req, res) => {
             branch,
             courses,
         });
+
+        // Update courses in courseModel
+        for (let courseId of courses) {
+            const course = await courseModel.findOne({ _id: courseId });
+            if (!course) {
+                // If course doesn't exist, handle accordingly
+                return res.status(400).send({ message: `Course with ID ${courseId} not found`, success: false });
+            }
+            // Add the user to the course's studentsEnrolled array
+            course.studentsEnrolled.push(newUser._id);
+            await course.save();
+        }
 
         console.log(newUser);
         return res.status(200).json({ message: "Registered Successfully", success: true, newUser });
@@ -35,6 +49,7 @@ const userRegister = async (req, res) => {
         });
     }
 };
+
 
 
 const loginController = async(req,res)=>{
@@ -132,21 +147,56 @@ const deleteUser = async(req,res)=>{
    
 }
 
-const editUser= async(req,res)=>{
+const editUser = async (req, res) => {
     const { userId } = req.params;
-    const {firstname, lastname, email, branch, accountType, courses}= req.body
+    const { firstname, lastname, email, branch, accountType, courses } = req.body;
     try {
+        const oldUser = await userModel.findOne({ _id: userId });
+
+        // Compare courses before and after update
+        const removedCourses = oldUser.courses.filter(course => !courses.includes(course));
+        const addedCourses = courses.filter(course => !oldUser.courses.includes(course));
+
         const user = await userModel.updateOne({ _id: userId }, {
-            $set:
-            {firstname: firstname, lastname: lastname, email: email, branch: branch, accountType: accountType, courses: courses,}
-        })
+            $set: { firstname, lastname, email, branch, accountType, courses }
+        });
+
         if (!user) {
-            return res.status(404).send({ message: "user not found", success: false })
+            return res.status(404).send({ message: "user not found", success: false });
         }
-        return res.status(200).send({ success: true, message: "User Edited", user })
+
+        // Remove user from studentsEnrolled of removed courses
+        for (let courseId of removedCourses) {
+            const course = await courseModel.findOne({ _id: courseId });
+            if (!course) {
+                return res.status(400).send({ message: 'Course not found' });
+            }
+            course.studentsEnrolled = course.studentsEnrolled.filter(studentId => studentId.toString() !== userId);
+            await course.save();
+        }
+
+        // Add user to studentsEnrolled of added courses
+        for (let courseId of addedCourses) {
+            const course = await courseModel.findOne({ _id: courseId });
+            if (!course) {
+                return res.status(400).send({ message: 'Course not found' });
+            }
+            if (!course.studentsEnrolled.includes(userId)) {
+                course.studentsEnrolled.push(userId);
+                await course.save();
+            }
+        }
+
+        return res.status(200).send({
+            success: true,
+            message: "User Edited",
+            user,
+            removedCourses,
+            addedCourses
+        });
     } catch (error) {
-        console.log(error)
-        return res.status(500).send({ success: false, message: 'Internal Server Error' })
+        console.log(error);
+        return res.status(500).send({ success: false, message: 'Internal Server Error' });
     }
 }
 

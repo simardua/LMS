@@ -25,7 +25,11 @@ const CourseAccessRoute = (props) => {
   
   return (
     <>
-      {!courseEnrolled ? <>You are not enrolled in this course</>:<><Component/></>}
+      {!courseEnrolled ? <>
+      <div style={{display:"flex", justifyContent:"center", justifyItems:"center", marginTop:"100px"}}>
+        <h4>You are not enrolled in this course.</h4>
+      </div>
+      </>:<><Component/></>}
     </>
   )
 }

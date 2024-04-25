@@ -3,17 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllCoursesAction } from '../../redux/action/courseAction';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Loader from '../miscellenious/Loader'
 
 const ManageCourses = () => {
   const dispatch = useDispatch()
   const courseData = useSelector((state) => state.courses.courses)
-  const loading = useSelector((state) => state.courses.isLoading)
-
+  const [loading, setloading] = useState(false)
   const [search, setSearch] = useState('')
   const [searchedCourse, setSearchedCourse] = useState([])
 
   useEffect(() => {
+    setloading(true)
     dispatch(fetchAllCoursesAction)
+    setloading(false)
   }, [])
 
   const courses = courseData.courses
@@ -22,10 +24,11 @@ const ManageCourses = () => {
   useEffect(() => {
     const courseSearch = async () => {
       try {
+        setloading(true)
         const response = await axios.get(`http://localhost:5000/api/course/?search=${search}`);
         const courseSearchResults = response.data.courses;
         setSearchedCourse(courseSearchResults);
-        console.log("search", searchedCourse)
+        setloading(false)
       } catch (error) {
         console.error('Error fetching searched courses:', error);
         setSearchedCourse([]); // Set to an empty array in case of an error
@@ -42,7 +45,7 @@ const ManageCourses = () => {
         </div>
         <div id='users-list'>
           {loading ? <>
-            loading....
+            <Loader/>
           </> : <>
             {search !== '' ? <> {searchedCourse.length < 1 ? <>No Course found</> : <>
               {searchedCourse && searchedCourse.length > 0 && searchedCourse.map((e) => (

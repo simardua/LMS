@@ -4,16 +4,19 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsersAction } from '../../redux/action/userAction';
 import axios from 'axios';
+import Loader from '../miscellenious/Loader';
 
 
 const ManageUsers = () => {
     const dispatch = useDispatch()
     const UsersData = useSelector((state) => state.allUser.users)
-    const loading = useSelector((state) => state.allUser.loading)
     const [search, setSearch] = useState('')
     const [searchedUser, setSearchedUser] = useState([])
+    const [loading, setloading] = useState(false)
     useEffect(() => {
+        setloading(true)
         dispatch(fetchUsersAction())
+        setloading(false)
     }, [])
     console.log(UsersData)
     const users = UsersData.users
@@ -25,9 +28,11 @@ const ManageUsers = () => {
     useEffect(() => {
         const userSearch = async () => {
             try {
+                setloading(true)
                 const response = await axios.get(`http://localhost:5000/api/user/?search=${search}`);
                 const userSearchResults = response.data.users;
                 setSearchedUser(userSearchResults);
+                setloading(false)
                 console.log("search", searchedUser)
             } catch (error) {
                 console.error('Error fetching searched users:', error);
@@ -48,7 +53,7 @@ const ManageUsers = () => {
                 </div>
                 <div id='users-list'>
                     {loading ? <>
-                        loading....
+                        <Loader/>
                     </> : <>
                         {search !== '' ? <> {searchedUser.length < 1 ? <>No User found</> : <>
                             {searchedUser && searchedUser.length > 0 && searchedUser.map((e) => (

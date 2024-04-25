@@ -6,6 +6,8 @@ import { deleteUserAction, userAction } from '../../redux/action/userAction';
 import axios from 'axios';
 import { searchCourse } from '../../redux/action/courseAction';
 import UserBadge from '../miscellenious/UserBadge';
+import { message } from 'antd';
+import Loader from '../miscellenious/Loader';
 
 const EditUser = () => {
     const navigate= useNavigate()
@@ -17,10 +19,13 @@ const EditUser = () => {
     const [accountType, setAccountType] = useState('')
 
     const coursesSearch = useSelector((state) => state.searchedCourse.courses).courses
+    const [loading, setloading] = useState(false)
 
     useEffect(() => {
         const search = () => {
+            setloading(true)
             dispatch(searchCourse(courses));
+            setloading(false)
             setSearchedCourses(coursesSearch);
         };
         search();
@@ -30,18 +35,25 @@ const EditUser = () => {
     }, []);
 
     const user = useSelector((state) => state.user.user)?.user;
-    const loading = useSelector((state) => state.user.isLoading);
 
     // useMemo to memoize user data
     const memoizedUser = useMemo(() => user, [user]);
    
     const editRequest = async (data) => {
         try {
+            setloading(true)
             const response = await axios.put(`http://localhost:5000/api/user/${userId}/edit`, data);
+            setloading(false)
+            if (response.data.success) {
+                message.success(response.data.message)
+            } else {
+                message.error(response.data.message)
+            }
             // Handle success
             console.log(response.data);
         } catch (error) {
             // Handle error
+            message.error(error)
             console.error(error);
         }
     };
@@ -53,7 +65,11 @@ const EditUser = () => {
     }
 
     const handleAddCourse = (course) => {
-        setSelectedCourses([...selectedCourses, course]);
+        if(selectedCourses.includes(course)){
+            message.error("already added")
+        }else{
+            setSelectedCourses([...selectedCourses, course]);
+        }
     }
     const [firstName, setFirstName] = useState(memoizedUser?.firstname || '');
     const [lastName, setLastName] = useState(memoizedUser?.lastname || '');
@@ -83,7 +99,7 @@ const EditUser = () => {
         <>
             <div>
                 {loading ? <>
-                    Loading...
+                    <Loader/>
                 </> : user ? <>
                     <div>
                         <form className='edituser-form'>

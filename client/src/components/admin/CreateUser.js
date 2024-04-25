@@ -5,6 +5,8 @@ import axios from 'axios';
 import { registerAction } from '../../redux/action/userAction';
 import UserBadge from '../miscellenious/UserBadge';
 import { searchCourse } from '../../redux/action/courseAction';
+import { message } from 'antd';
+import Loader from '../miscellenious/Loader';
 
 const CreateUser = () => {
     const [firstName, setFirstName] = useState('');
@@ -18,6 +20,9 @@ const CreateUser = () => {
     const [courses, setCourses]= useState('')
     const [selectedCourses, setSelectedCourses]=useState([])
     const [searchedCourses, setSearchedCourses]=useState([])
+    const [loading, setloading] = useState(false)
+    const success= useSelector((state)=>state.user.success)
+    const error = useSelector((state)=>state.user.error)
 
     const coursesSearch=useSelector((state)=>state.searchedCourse.courses).courses
 
@@ -32,7 +37,14 @@ const CreateUser = () => {
 
     const handleSubmit = async(e) => {
         if(password==confirmPassword){
+            setloading(true)
             await dispatch(registerAction({ firstname: firstName, lastname: lastName, email: email, password: password, accountType: accountType, branch: branch, courses:selectedCourses }))
+            if (success) {
+                message.success(success)
+            } else {
+                message.error(error)
+            }
+            setloading(false)
         }
     };
 
@@ -42,12 +54,18 @@ const CreateUser = () => {
     }
 
     const handleAddCourse = (course) => {
-        setSelectedCourses([...selectedCourses, course]);
+        if (selectedCourses.includes(course)) {
+            message.warning("already added")
+        } else {
+            setSelectedCourses([...selectedCourses, course]);
+        }
     }
 
-    console.log("selected", selectedCourses)
   return (
     <>
+          {loading ? <>
+          <Loader/>
+          </> : <> 
           <div className="signup-container">
               <form className="signup-form">
                   <h2>Create a user</h2>
@@ -98,11 +116,11 @@ const CreateUser = () => {
                       onChange={(e) => setAccountType(e.target.value)}
                       required
                   >
-                  <option value="" disabled>Select Account Type</option>
+                      <option value="" disabled>Select Account Type</option>
                       <option value="Admin">Admin</option>
                       <option value="Instructor">Instructor</option>
                       <option value="Student">Student</option>
-                      </select>
+                  </select>
 
                   <label>Branch:</label>
                   <select
@@ -144,6 +162,8 @@ const CreateUser = () => {
                   <button onClick={handleSubmit} type="submit">Signup</button>
               </form>
           </div>
+          </>}
+         
           
     </>
   )
