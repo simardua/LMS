@@ -8,9 +8,7 @@ const createEvent = async (req, res) => {
     console.log(courseId);
     try {
         const event = await eventModel.create({ ...req.body, courseId: courseId });
-        
-
-        res.status(201).json({ success: true, data: event });
+        res.status(201).json({ success: true, data: event, message:"Event create successfully" });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }

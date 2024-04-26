@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import Loader from './miscellenious/Loader'
 
 const Attendance = () => {
     const params = useParams();
@@ -8,6 +9,7 @@ const Attendance = () => {
     const [accountType, setAccountType] = useState('');
     const [attendance, setAttendance] = useState([]);
     const user = JSON.parse(localStorage.getItem('user'));
+    const [loading, setloading] = useState(false)
 
     // const [presentNumber, setPresentNumber] = useState(0)
     // const [absentNumber, setAbsentNumber] = useState(0)
@@ -62,11 +64,13 @@ const Attendance = () => {
 
     const getDates = async () => {
         try {
+            setloading(true)
             const res = await axios.post(`http://localhost:5000/api/attendance/get-attendance/${courseId}`);
             if (res.data.success) {
                 const localDates = res.data.attendance.map(item => ({ ...item, date: getLocalDateString(item.date) }));
                 setDates(localDates);
             }
+            setloading(false)
         } catch (error) {
             console.log(error.message);
         }
@@ -74,9 +78,11 @@ const Attendance = () => {
 
     const userAttendance = async () => {
         try {
+            setloading(true)
             const response = await axios.post(`http://localhost:5000/api/attendance/get-student-attendance/${courseId}`, { studentId: user?._id });
             const localAttendance = response.data.attendance.map(item => ({ ...item, date: getLocalDateString(item.date) }));
             setAttendance(localAttendance);
+            setloading(false)
         } catch (error) {
             console.log(error.message);
         }
@@ -93,48 +99,53 @@ const Attendance = () => {
 
     return (
         <>
-            {accountType === "Instructor" || accountType === "Admin" ? (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <table style={{ borderCollapse: 'collapse', width: '70%' }}>
-                        <thead>
-                            <tr>
-                                <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {dates.map((item, index) => (
-                                <tr key={index}>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                                        <Link to={`/userAttendance/${params.courseId}/${item?._id}`}>
-                                            {item?.date}
-                                        </Link>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            ) : (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <table style={{ borderCollapse: 'collapse', width: '70%' }}>
-                        <thead>
-                            <tr>
-                                <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>Date</th>
-                                <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>Attendance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {attendance.map((item, index) => (
-                                <tr key={index}>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{item?.date}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{item?.isPresent ? "Present" : "Absent"}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    {/* {attendencePercentage} */}
-                </div>
-            )}
+        {loading? <>
+            <Loader/>
+        </>:<>
+                    {accountType === "Instructor" || accountType === "Admin" ? (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <table style={{ borderCollapse: 'collapse', width: '70%' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {dates.map((item, index) => (
+                                        <tr key={index}>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
+                                                <Link to={`/userAttendance/${params.courseId}/${item?._id}`}>
+                                                    {item?.date}
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <table style={{ borderCollapse: 'collapse', width: '70%' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>Date</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>Attendance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {attendance.map((item, index) => (
+                                        <tr key={index}>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{item?.date}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{item?.isPresent ? "Present" : "Absent"}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {/* {attendencePercentage} */}
+                        </div>
+                    )}
+        </>}
+            
         </>
     );
 };

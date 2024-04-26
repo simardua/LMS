@@ -31,7 +31,6 @@ const CourseEvents = () => {
     const [selectedDocument, setSelectedDocument] = useState()
     const [documentSelected, setDocumentSelected] = useState(false)
     const [singleSubmission, setSingleSubmission] = useState(null)
-    const [loading, setLoading] = useState(false)
 
 
     // events
@@ -102,11 +101,9 @@ const CourseEvents = () => {
     }
 
     const fetchUserSubmission = async (id) => {
-        setLoading(true)
         const response = await axios.post(`http://localhost:5000/api/event/user-submission/${id}`, { userId: localUser?._id })
         setSingleSubmission(response.data)
         console.log(singleSubmission)
-        setLoading(false)
     }
 
     const options = {
@@ -271,66 +268,64 @@ const CourseEvents = () => {
 
                                                 <h6><b>Created on:</b> {getLocalDateString(item?.startTime)}</h6>
                                                 <h6><b>Deadline:</b> {getLocalDateString(item?.deadLine)}</h6>
-                                                {loading ? <><Loader/></> : <>
-                                                    {singleSubmission && singleSubmission.success ? <>
-                                                        <h6><b>Submitted File: </b><Link to={singleSubmission.submission.fileUrl}>file</Link></h6>
-                                                        <h6><b>Submitted at: </b>{getLocalDateString(singleSubmission.submission.submittedOn)}</h6>
-                                                        <h6><b>Marks: </b>{singleSubmission.submission.obtainedGrade ? <>{singleSubmission.submission.obtainedGrade}</>:<>not graded yet</>}</h6>
-                                                        <p>Comments: {singleSubmission.submission.comments}</p>
+                                                {singleSubmission && singleSubmission.success ? <>
+                                                    <h6><b>Submitted File: </b><Link to={singleSubmission.submission.fileUrl}>file</Link></h6>
+                                                    <h6><b>Submitted at: </b>{getLocalDateString(singleSubmission.submission.submittedOn)}</h6>
+                                                    <h6><b>Marks: </b>{singleSubmission.submission.obtainedGrade ? <>{singleSubmission.submission.obtainedGrade}</> : <>not graded yet</>}</h6>
+                                                    <p>Comments: {singleSubmission.submission.comments}</p>
+                                                </> : <>
+                                                    {localUser.accountType === 'Admin' || localUser.accountType === 'Instructor' ? <>
+                                                        <Link to={`/events/${item?._id}`}>View submissions</Link>
                                                     </> : <>
-                                                        {localUser.accountType === 'Admin' || localUser.accountType === 'Instructor' ? <>
-                                                            <Link to={`/events/${item?._id}`}>View submissions</Link>
-                                                        </> : <>
-                                                            <div>
-                                                                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submissionModal">
-                                                                    Add Submission
-                                                                </button>
-                                                                <p>No submission yet.</p>
+                                                        <div>
+                                                                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={`#submissionModal-${item._id}`}>
+                                                                Add Submission
+                                                            </button>
+                                                            <p>No submission yet.</p>
 
-                                                                {/* Modal */}
-                                                                <div className="modal fade" id="submissionModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                    <div className="modal-dialog">
-                                                                        <div className="modal-content">
-                                                                            <div className="modal-header">
-                                                                                <h1 className="modal-title fs-5" id="exampleModalLabel">Add Submission</h1>
-                                                                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                                                            </div>
-                                                                            <div className="modal-body">
+                                                            {/* Modal */}
+                                                                    <div className="modal fade" id={`submissionModal-${item._id}`} tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                        <div className="modal-dialog">
+                                                                            <div className="modal-content">
+                                                                                <div className="modal-header">
+                                                                                    <h1 className="modal-title fs-5" id="exampleModalLabel">Add Submission</h1>
+                                                                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                                                                </div>
+                                                                                <div className="modal-body">
 
-                                                                                <input
-                                                                                    type="file"
-                                                                                    accept=".pdf,.doc,.docx,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                                                                    name="document"
-                                                                                    id="file"
-                                                                                    style={{ display: 'none' }}
-                                                                                    onChange={handleFileUpload}
-                                                                                />
-                                                                                <p>
-                                                                                    <label htmlFor="file">Select a document</label>
-                                                                                </p>
-                                                                                {selectedDocument && <p>Selected document: {selectedDocument.name}</p>}
-
-
-                                                                                <label>
-                                                                                    Comments:
-                                                                                    <textarea
-                                                                                        name="comments"
-                                                                                        style={{ width: "470px", height: "250px" }}
-                                                                                        value={comments}
-                                                                                        onChange={(e) => setComments(e.target.value)}
+                                                                                    <input
+                                                                                        type="file"
+                                                                                        accept=".pdf,.doc,.docx,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                                                        name="document"
+                                                                                        id={`file-${item._id}`}
+                                                                                        style={{ display: 'none' }}
+                                                                                        onChange={(e) => handleFileUpload(e, item._id)}
                                                                                     />
-                                                                                </label>
+                                                                                    <p>
+                                                                                        <label htmlFor={`file-${item._id}`}>Select a document</label>
+                                                                                    </p>
+                                                                                    {selectedDocument && <p>Selected document: {selectedDocument.name}</p>}
 
-                                                                            </div>
-                                                                            <div className="modal-footer">
-                                                                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                                <button type="button" className="btn btn-primary" onClick={() => updatePost(item?._id)} >Save changes</button>
+
+                                                                                    <label>
+                                                                                        Comments:
+                                                                                        <textarea
+                                                                                            name="comments"
+                                                                                            style={{ width: "470px", height: "250px" }}
+                                                                                            value={comments}
+                                                                                            onChange={(e) => setComments(e.target.value)}
+                                                                                        />
+                                                                                    </label>
+
+                                                                                </div>
+                                                                                <div className="modal-footer">
+                                                                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                    <button type="button" className="btn btn-primary" onClick={() => updatePost(item._id)} >Save changes</button>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                        </>}
+                                                        </div>
 
                                                     </>}
                                                 </>}
