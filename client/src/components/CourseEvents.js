@@ -12,6 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Loader from './miscellenious/Loader.js'
+import {message} from "antd"
 
 const CourseEvents = () => {
     const { courseId } = useParams();
@@ -47,7 +48,11 @@ const CourseEvents = () => {
         try {
             const { data } = await axios.post(`http://localhost:5000/api/event/${courseId}/create-event`, payload)
             console.log(data)
-
+            if (data.success) {
+                message.success(data.message)
+            } else {
+                message.error(data.message)
+            }
         } catch (error) {
             console.log(error.message)
         }
@@ -91,6 +96,11 @@ const CourseEvents = () => {
             const res = await axios.post(`http://localhost:5000/api/event/post/${id}`,
                 { userId: localUser._id, file: submissionFile, comments: comments });
             console.log(res.data)
+            if (res.data.success) {
+                message.success(res.data.message)
+            } else {
+                message.error(res.data.message)
+            }
         } catch (error) {
             console.log(error);
         }
@@ -98,6 +108,11 @@ const CourseEvents = () => {
 
     const createAttendance = async (data) => {
         const response = await axios.post(`http://localhost:5000/api/attendance/${courseId}/create-attendance`, data)
+        if (response.data.success) {
+            message.success(response.data.message)
+        } else {
+            message.error(response.data.message)
+        }
     }
 
     const fetchUserSubmission = async (id) => {
