@@ -1,18 +1,63 @@
 const courseModel = require("../models/courseModel");
 const eventModel = require("../models/eventModel");
 const userModel = require("../models/userModel");
+const transporter = require("./nodeMailer");
 
+// const createEvent = async (req, res) => {
+//     const { courseId } = req.params;
+//     const {eventName, eventDescription, startTime, deadLine}=req.body
+//   const mailOptions = {
+//     from: 'simardeepsinghdua@gmail.com',
+//     to: 'gaurishanker97790@gmail.com',
+//     subject: 'New Event Created',
+//     text: `A new event has been created: ${eventName}`
+//   };
+//     try {
+//         const event = await eventModel.create({ ...req.body, courseId: courseId });
+        
+//       transporter.sendMail(mailOptions, function (error, info) {
+//         if (error) {
+//           console.log(error);
+//         } else {
+//           console.log('Email sent: ' + info.response);
+//         }
+//       });
+//       res.status(201).json({ success: true, data: event, message: "Event create successfully" });
+//     } catch (error) {
+//         res.status(500).json({ success: false, error: error.message });
+//     }
+// }
 const createEvent = async (req, res) => {
-    const { courseId } = req.params;
+  const { courseId } = req.params;
+  const { eventName, eventDescription, startTime, deadLine } = req.body;
+  const mailOptions = {
+    from: 'simardeepsinghdua@gmail.com',
+    subject: 'New Event Created',
+    text: `A new event has been created: ${eventName}`
+  };
 
-    console.log(courseId);
-    try {
-        const event = await eventModel.create({ ...req.body, courseId: courseId });
-        res.status(201).json({ success: true, data: event, message:"Event create successfully" });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+  try {
+    const course = await courseModel.findById(courseId).populate('studentsEnrolled');
+    if (!course) {
+      return res.status(404).json({ success: false, message: "Course not found" });
     }
-}
+    const enrolledStudentsEmails = course.studentsEnrolled.map(student => student.email);
+    mailOptions.to = enrolledStudentsEmails.join(', ');
+    const event = await eventModel.create({ ...req.body, courseId: courseId });
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+
+    res.status(201).json({ success: true, data: event, message: "Event created successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 
 
 const fetchEvents=async(req,res)=>{

@@ -37,7 +37,7 @@ const Navbar = () => {
     <>
       <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: "#66317d" }}>
         <div className="container-fluid">
-          <Link className="navbar-brand text-light" to="/"><img style={{height:"45px", marginLeft:"10px"}} src="logo.png"/></Link>
+          <Link className="navbar-brand text-light" to="/"><img style={{height:"45px", marginLeft:"10px"}} src="/logo.png"/></Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon" />
           </button>
