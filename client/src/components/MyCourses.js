@@ -13,7 +13,7 @@ const MyCourses = () => {
     const myCourses= user.user?.courses
     return (
         <>
-            <div className='main'>
+            <div className='main' style={{width:'100%', marginLeft:"20px"}}>
                 <div className='heading'>
                     <h1>My Courses</h1>
                 </div>

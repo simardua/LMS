@@ -5,13 +5,11 @@ import axios from 'axios';
 import UserBadge from '../miscellenious/UserBadge';
 import UploadWidget from '../miscellenious/UploadWidget';
 import { message } from 'antd';
-import Loader from '../miscellenious/Loader'
+import Loader from '../miscellenious/Loader';
+import './createCourse.css'
 
 
 const CreateCourse = () => {
-    // const dispatch = useDispatch()
-    // const searchedUser = useSelector((state) => state.searchedUser.user)
-    // const loading = useSelector((state) => state.searchedUser.loading)
     const [coursecode, setCoursecode] = useState('')
     const [coursename, setCoursename] = useState('')
     const [instructors, setInstructors] = useState('')
@@ -29,7 +27,6 @@ const CreateCourse = () => {
                 const response = await axios.get(`http://localhost:5000/api/user/?search=${instructors}`);
                 const instructorSearchResults = response.data.users;
                 setSearchedinstructors(instructorSearchResults.slice(0, 3));
-                console.log("search", searchedinstructors)
             } catch (error) {
                 console.error('Error fetching searched users:', error);
                 setSearchedinstructors([]);
@@ -38,15 +35,12 @@ const CreateCourse = () => {
         userSearch();
     }, [instructors]);
 
-
-
     useEffect(() => {
         const userSearch = async () => {
             try {
                 const response = await axios.get(`http://localhost:5000/api/user/?search=${students}`);
                 const studentSearchResults = response.data.users;
                 setSearchedstudents(studentSearchResults.slice(0, 3));
-                console.log("search", searchedstudents)
             } catch (error) {
                 console.error('Error fetching searched users:', error);
                 setSearchedstudents([]);
@@ -55,19 +49,11 @@ const CreateCourse = () => {
         userSearch();
     }, [students]);
 
-
-    // useEffect(() => {
-    //     const res = dispatch(searchUserAction(instructors))
-    //     // setSearchedinstructors(res)
-    //     console.log("redux",res)
-    // }, [instructors])
-
     const handleAddInstructor = (data) => {
         if (selectedInstructors.includes(data)) {
             message.warning("already exist")
         } else {
             setSelectedInstructors([...selectedInstructors, data])
-            console.log(selectedInstructors)
         }
     }
 
@@ -76,7 +62,6 @@ const CreateCourse = () => {
             message.warning("already exist")
         } else {
             setSelectedStudents([...selectedStudents, data])
-            console.log(selectedStudents)
         }
     }
 
@@ -92,38 +77,39 @@ const CreateCourse = () => {
         e.preventDefault()
         setloading(true)
         const res = await axios.post("http://localhost:5000/api/course/create-course", { coursecode: coursecode, coursename: coursename, courseImage: courseImage, instructors: selectedInstructors, studentsEnrolled: selectedStudents })
-        
-        console.log(res)
+
         setloading(false)
         if (res.data.success) {
             message.success("Course Created Successfully")
-        }else{
+        } else {
             message.error(res.data.message)
         }
     }
 
     const media_url = (data) => {
         setCourseImage(data)
-        console.log(data)
     }
+
     return (
         <>
-        {loading? <><Loader/></>:<>
+            {loading ? <><Loader /></> : <>
 
-                <div>
-                    <h3>Create a new course</h3>
+                <div className="createcourse-container">
                     <div>
-                        <form className='p-2'>
+                    <h3>Create a new course</h3>
+                    </div>
+                    
+                    <div>
+                        <form className='createcourse-form p-2'>
                             <label>Course Code:</label>
                             <input type='text' value={coursecode} onChange={(e) => setCoursecode(e.target.value)} />
 
                             <label>Course Name:</label>
                             <input type='text' value={coursename} onChange={(e) => setCoursename(e.target.value)} />
-                            <div>
-                                <label>Image:</label>
+                            <div className="upload-widget-container">
+                                <label>Course Image:</label>
                                 <p>{courseImage}</p>
                                 <UploadWidget func={media_url} />
-
                             </div>
                             <label>Instructors:</label>
                             <input type='text' value={instructors} onChange={(e) => setInstructors(e.target.value)} />
@@ -140,8 +126,8 @@ const CreateCourse = () => {
                             <div>
                                 {instructors !== '' ? <>
                                     {searchedinstructors && searchedinstructors.length > 0 && searchedinstructors.map((e) => (
-                                        <div key={e._id} style={{ border: "1px solid black", maxWidth: "20%", padding: "5px", margin: "5px" }}>
-                                            <button type='button' style={{ width: "100%", padding: "0px", height: "auto" }} onClick={() => handleAddInstructor(e)}>
+                                        <div key={e._id} className="user-badge-container">
+                                            <button type='button' onClick={() => handleAddInstructor(e)}>
                                                 <div >
                                                     <p>{e.firstname} {e.lastname}</p>
                                                     <p>{e.email}</p>
@@ -166,8 +152,8 @@ const CreateCourse = () => {
                             <div>
                                 {students !== '' ? <>
                                     {searchedstudents && searchedstudents.length > 0 && searchedstudents.map((e) => (
-                                        <div key={e._id} style={{ border: "1px solid black", maxWidth: "20%", padding: "5px", margin: "5px" }}>
-                                            <button type='button' style={{ width: "100%", padding: "0px", height: "auto" }} onClick={() => handleAddStudent(e)}>
+                                        <div key={e._id} className="user-badge-container">
+                                            <button type='button' onClick={() => handleAddStudent(e)}>
                                                 <div >
                                                     <p>{e.firstname} {e.lastname}</p>
                                                     <p>{e.email}</p>
@@ -183,10 +169,10 @@ const CreateCourse = () => {
                         </form>
                     </div>
                 </div>
-        </>}
-            
+            </>}
+
         </>
     )
 }
 
-export default CreateCourse
+export default CreateCourse;

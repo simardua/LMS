@@ -3,47 +3,27 @@ const eventModel = require("../models/eventModel");
 const userModel = require("../models/userModel");
 const transporter = require("./nodeMailer");
 
-// const createEvent = async (req, res) => {
-//     const { courseId } = req.params;
-//     const {eventName, eventDescription, startTime, deadLine}=req.body
-//   const mailOptions = {
-//     from: 'simardeepsinghdua@gmail.com',
-//     to: 'gaurishanker97790@gmail.com',
-//     subject: 'New Event Created',
-//     text: `A new event has been created: ${eventName}`
-//   };
-//     try {
-//         const event = await eventModel.create({ ...req.body, courseId: courseId });
-        
-//       transporter.sendMail(mailOptions, function (error, info) {
-//         if (error) {
-//           console.log(error);
-//         } else {
-//           console.log('Email sent: ' + info.response);
-//         }
-//       });
-//       res.status(201).json({ success: true, data: event, message: "Event create successfully" });
-//     } catch (error) {
-//         res.status(500).json({ success: false, error: error.message });
-//     }
-// }
 const createEvent = async (req, res) => {
   const { courseId } = req.params;
   const { eventName, eventDescription, startTime, deadLine } = req.body;
-  const mailOptions = {
-    from: 'simardeepsinghdua@gmail.com',
-    subject: 'New Event Created',
-    text: `A new event has been created: ${eventName}`
-  };
-
   try {
     const course = await courseModel.findById(courseId).populate('studentsEnrolled');
     if (!course) {
       return res.status(404).json({ success: false, message: "Course not found" });
     }
     const enrolledStudentsEmails = course.studentsEnrolled.map(student => student.email);
-    mailOptions.to = enrolledStudentsEmails.join(', ');
-    const event = await eventModel.create({ ...req.body, courseId: courseId });
+    const mailOptions = {
+      from: 'simardeepsinghdua@gmail.com',
+      to: enrolledStudentsEmails.join(', '),
+      subject: `LMS-${course.coursecode} ${course.coursename}-New Event Created`,
+      text: `A new event has been created:\n\n` +
+        `Course: ${course.coursecode} ${course.coursename}\n` +
+        `Event Name: ${eventName}\n` +
+        `Event Description: ${eventDescription}\n` +
+        `Start Time: ${new Date(startTime).toLocaleString()}\n` +
+        `Deadline: ${new Date(deadLine).toLocaleString()}\n` +
+        `For more details, please login to your account.`
+    };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
@@ -51,12 +31,13 @@ const createEvent = async (req, res) => {
         console.log('Email sent: ' + info.response);
       }
     });
-
+    const event = await eventModel.create({ ...req.body, courseId: courseId });
     res.status(201).json({ success: true, data: event, message: "Event created successfully" });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
 
 
 
@@ -79,7 +60,6 @@ const postController=async(req,res)=>{
     const {id}=req.params
 
     try{
-        
     const currentDate= new Date()
       const file=req.body.file;
       if(!file){

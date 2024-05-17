@@ -1,5 +1,6 @@
-.edituser-container {
+.createcourse-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #f5f5f5;
@@ -7,7 +8,7 @@
     margin-top: 5px;
 }
 
-.edituser-form {
+.createcourse-form {
     background-color: #ffffff;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -16,13 +17,13 @@
     width: 500px;
 }
 
-.edituser-form label {
+.createcourse-form label {
     display: block;
     margin-bottom: 8px;
     color: #66317d;
 }
 
-.edituser-form input,
+.createcourse-form input,
 select {
     width: 100%;
     padding: 8px;
@@ -31,7 +32,7 @@ select {
     border-radius: 4px;
 }
 
-.edituser-form button {
+.createcourse-form button {
     background-color: #66317d;
     color: #ffffff;
     padding: 10px;
@@ -41,10 +42,37 @@ select {
     cursor: pointer;
 }
 
-.edituser-form button:hover {
+.createcourse-form button:hover {
     background-color: #3d1d4a;
 }
 
-.modal-body {
-    color: #000000;
+.upload-widget-container {
+    margin-bottom: 16px;
+    width: fit-content;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.user-badge-container {
+    border: 1px solid black;
+    max-width: 70%;
+    padding: 5px;
+    margin: 5px;
+}
+
+.user-badge-container button {
+    width: 100%;
+    padding: 0px;
+    height: auto;
+    padding-top: 5px ;
+}
+
+.user-badge-container p {
+    margin: 0;
 }

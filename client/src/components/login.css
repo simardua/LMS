@@ -14,10 +14,7 @@ body {
 
 .login-form {
     background-color: #ffffff;
-    border: 1px solid #66317d;
-    border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
@@ -69,4 +66,18 @@ button:hover {
     /* Adjust the distance from the right */
     transform: translateY(-50%);
     cursor: pointer;
+}
+
+.login-container{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; 
+    width: fit-content;
+    padding: 0;
+    border: 1px solid #66317d; 
+    border-radius: 8px;
+    box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
+    margin: auto;
+    margin-top: 80px;
+    height: auto;
 }

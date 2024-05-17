@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-// import "./createUser.css"
+import "./createUser.css"
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { registerAction } from '../../redux/action/userAction';
@@ -29,7 +29,7 @@ const CreateUser = () => {
     useEffect(() => {
         const search =() => {
             dispatch(searchCourse(courses));
-            setSearchedCourses(coursesSearch);
+            setSearchedCourses(coursesSearch?.slice(0,3));
         };
         search();
     }, [courses]);
@@ -139,7 +139,7 @@ const CreateUser = () => {
                   <div className='d-flex flex-wrap'>
                       {selectedCourses.length > 0 ? <>
                           {selectedCourses.map((u) => (
-                              <UserBadge key={u._id} user={u.coursename} handleDelete={() => handleDeleteCourse(u)} />
+                              <UserBadge key={u._id} user={u.coursename} handleDelete={() => handleDeleteCourse(u)}/>
                           ))}
 
                       </> : <></>}
@@ -148,8 +148,8 @@ const CreateUser = () => {
                   <div>
                       {courses !== '' ? <>
                           {searchedCourses && searchedCourses.length > 0 && searchedCourses.map((e) => (
-                              <div key={e._id} style={{ border: "1px solid black", maxWidth: "20%", padding: "5px", margin: "5px" }}>
-                                  <button type='button' style={{ width: "100%", padding: "0px", height: "auto" }} onClick={() => handleAddCourse(e)}>
+                              <div key={e._id} style={{ border: "1px solid black", maxWidth: "70%", padding: "5px", margin: "5px" }}>
+                                  <button type='button' style={{ width: "100%", padding: "0px", height: "auto", paddingTop:"5px" }} onClick={() => handleAddCourse(e)}>
                                       <div >
                                           <p>{e.coursecode} {e.coursename}</p>
                                       </div>

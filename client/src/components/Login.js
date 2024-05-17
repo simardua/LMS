@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginAction } from '../redux/action/userAction';
-import {message} from 'antd'
+import { message } from 'antd';
 import './login.css';
 
 const Login = () => {
@@ -21,7 +21,7 @@ const Login = () => {
                 console.log('success');
                 message.success('Login successful!');
                 navigate('/');
-            }else{
+            } else {
                 message.error('Invalid credentials. Please try again.');
             }
         } catch (err) {
@@ -40,33 +40,37 @@ const Login = () => {
     }, []);
 
     return (
-        
-        <div className="login-container">
-            <form className="login-form" onSubmit={handleSubmit}>
-                <h2>Login</h2>
-                <div className="form-group">
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Password:</label>
-                    <div className="password-input">
+        <div className="login-container" >
+            <div className='image-container'>
+                <img src='/lms image.jpg' alt="login" style={{width:"630px"}} />
+            </div>
+            <div className="form-container">
+                <form className="login-form" onSubmit={handleSubmit}>
+                    <h2>Login</h2>
+                    <div className="form-group">
+                        <label>Email:</label>
                         <input
-                            type={showPassword ? 'text' : 'password'}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
-                        <i className={showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'} onClick={togglePasswordVisibility} />
                     </div>
-                </div>
-                <button type="submit">Login</button>
-            </form>
+                    <div className="form-group">
+                        <label>Password:</label>
+                        <div className="password-input">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <i className={showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'} onClick={togglePasswordVisibility} />
+                        </div>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
         </div>
     );
 };

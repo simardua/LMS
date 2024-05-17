@@ -101,7 +101,7 @@ const EditUser = () => {
                 {loading ? <>
                     <Loader/>
                 </> : user ? <>
-                    <div>
+                    <div style={{margin:"auto"}}>
                         <form className='edituser-form'>
                             <label>First Name:</label>
                             <input
@@ -178,7 +178,7 @@ const EditUser = () => {
                                     </> : <></>}
 
                                 </div>
-                                <div>
+                                <div style={{width:"100vw"}}>
                                     {courses !== '' ? <>
                                         {searchedCourses && searchedCourses.length > 0 && searchedCourses.map((e) => (
                                             <div key={e._id} style={{ border: "1px solid black", maxWidth: "20%", padding: "5px", margin: "5px" }}>
