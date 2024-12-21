@@ -2,13 +2,13 @@ const courseModel = require("../models/courseModel")
 const userModel = require("../models/userModel");
 
 const createCourse = async (req, res) => {
-    const { coursecode, coursename, instructors, studentsEnrolled } = req.body;
+    const { coursecode, coursename, instructors, studentsEnrolled, courseImage } = req.body;
     try {
         const course = await courseModel.findOne({ coursecode });
         if (course) {
             return res.status(200).send({ message: "Course Already Exists", success: false });
         } else {
-            const newCourse = await courseModel.create({ coursecode, coursename, instructors, studentsEnrolled });
+            const newCourse = await courseModel.create({ coursecode, coursename, instructors, studentsEnrolled, courseImage });
 
 
             for (const studentId of studentsEnrolled) {
@@ -31,7 +31,7 @@ const createCourse = async (req, res) => {
 
 const editCourse = async (req, res) => {
     const { courseId } = req.params;
-    const { coursecode, coursename, instructors, studentsEnrolled } = req.body;
+    const { coursecode, coursename, instructors, studentsEnrolled, courseImage } = req.body;
     try {
         const oldCourse = await courseModel.findOne({ _id: courseId });
 
@@ -40,7 +40,7 @@ const editCourse = async (req, res) => {
         }
 
         const updatedCourse = await courseModel.updateOne({ _id: courseId }, {
-            $set: { coursecode, coursename, instructors, studentsEnrolled }
+            $set: { coursecode, coursename, instructors, studentsEnrolled, courseImage }
         });
 
         if (!updatedCourse) {

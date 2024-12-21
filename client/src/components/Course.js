@@ -69,19 +69,36 @@ const Course = () => {
 
     const handleCreateContent = async (e) => {
         e.preventDefault();
-        setloading(true)
-        await axios.post(`http://localhost:5000/api/content/${courseId}/add-content`, { heading: formData.heading, description: formData.description, URL: formData.url, file: formData.file, media: formData.media, videoUrl: extractVideoId(formData.videoUrl) });
-        setFormData({
-            heading: '',
-            description: '',
-            url: [],
-            file: null,
-            media: null,
-            videoUrl: null,
-        });
-        setloading(false)
+        setloading(true); // Corrected to camelCase for consistency
+    
+        try {
+            await axios.post(`http://localhost:5000/api/content/${courseId}/add-content`, {
+                heading: formData.heading,
+                description: formData.description,
+                URL: formData.url,
+                file: formData.file,
+                media: formData.media,
+                videoUrl: extractVideoId(formData.videoUrl)
+            });
+    
+            setFormData({
+                heading: '',
+                description: '',
+                url: [],
+                file: null,
+                media: null,
+                videoUrl: null
+            });
+    
+        } catch (error) {
+            console.error("There was an error creating the content!", error);
+            // Optionally, provide user feedback here, such as:
+            // alert("Failed to create content. Please try again.");
+        } finally {
+            setloading(false);
+        }
     };
-
+    
     const media_url = (data) => {
         setFormData(({
             ...formData,
@@ -198,7 +215,7 @@ const Course = () => {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary" onClick={handleCreateContent}>Create</button>
+                                <button type="button" className="btn btn-primary"  data-bs-dismiss="modal" aria-label="Close" onClick={handleCreateContent}>Create</button>
                             </div>
                         </div>
                     </div>

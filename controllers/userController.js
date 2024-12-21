@@ -2,7 +2,7 @@ const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("../node_modules/jsonwebtoken")
 const courseModel = require("../models/courseModel")
-
+require('dotenv').config();
 
 const userRegister = async (req, res) => {
     let { firstname, lastname, email, password, accountType, branch, courses } = req.body;
@@ -13,7 +13,7 @@ const userRegister = async (req, res) => {
             return res.status(200).send({ message: "User Already Exists", success: false });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, parseInt(process.env.HASH_PASS_KEY));
         password = hashedPassword;
 
         // Create the new user
@@ -67,7 +67,7 @@ const loginController = async(req,res)=>{
                 .status(200)
                 .send({ message: "Invlid EMail or Password", success: false });
         }
-        const token = await jwt.sign({ userId: user._id }, '123');
+        const token = await jwt.sign({ userId: user._id }, process.env.JWT_TOKEN_KEY);
         console.log("token", token)
         user.token = token;
         res.cookie("token", token, {
@@ -119,7 +119,7 @@ const signoutController = async (req, res) => {
     if (!token) {
         return res.status(403).json({ success: false, message: 'Unauthorized access' });
     }
-    const decoded = await jwt.verify(token, '123')
+    const decoded = await jwt.verify(token, process.env.JWT_TOKEN_KEY)
     console.log(decoded)
     console.log("it", decoded)
     if (decoded) {
@@ -258,7 +258,7 @@ const changePassword = async(req,res)=>{
         if (!isMatch) {
             return res.status(200).send({message: "Password doesn't match with current password", success:false})
         }
-        const hashedNewPass = await bcrypt.hash(newPass, 10);
+        const hashedNewPass = await bcrypt.hash(newPass, parseInt(process.env.HASH_PASS_KEY));
         user.password = hashedNewPass;
         await user.save()
         return res.status(200).send({message:"Password Changed Successfully", success: true})

@@ -15,6 +15,7 @@
     "antd": "^5.16.2",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
+    "dotenv": "^16.4.7",
     "firebase": "^10.9.0",
     "react": "^18.2.0",
     "react-crud-icons": "^1.2.3",

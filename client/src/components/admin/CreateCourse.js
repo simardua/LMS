@@ -126,8 +126,8 @@ const CreateCourse = () => {
                             <div>
                                 {instructors !== '' ? <>
                                     {searchedinstructors && searchedinstructors.length > 0 && searchedinstructors.map((e) => (
-                                        <div key={e._id} className="user-badge-container">
-                                            <button type='button' onClick={() => handleAddInstructor(e)}>
+                                        <div key={e._id} className="user-badge-container" style={{ border: "1px solid black", maxWidth: "70%", padding: "5px", margin: "5px" }}>
+                                            <button type='button' style={{ width: "100%", padding: "0px", height: "auto", paddingTop: "5px" }} onClick={() => handleAddInstructor(e)}>
                                                 <div >
                                                     <p>{e.firstname} {e.lastname}</p>
                                                     <p>{e.email}</p>
@@ -152,8 +152,8 @@ const CreateCourse = () => {
                             <div>
                                 {students !== '' ? <>
                                     {searchedstudents && searchedstudents.length > 0 && searchedstudents.map((e) => (
-                                        <div key={e._id} className="user-badge-container">
-                                            <button type='button' onClick={() => handleAddStudent(e)}>
+                                        <div key={e._id} className="user-badge-container" style={{ border: "1px solid black", maxWidth: "70%", padding: "5px", margin: "5px" }}>
+                                            <button type='button' style={{ width: "100%", padding: "0px", height: "auto", paddingTop: "5px" }} onClick={() => handleAddStudent(e)}>
                                                 <div >
                                                     <p>{e.firstname} {e.lastname}</p>
                                                     <p>{e.email}</p>

@@ -8,6 +8,7 @@ const EventDetails = () => {
     const [submissions, setSubmissions] = useState([]);
     const [userNames, setUserNames] = useState([]);
     const [marks, setMarks] = useState([]);
+    const [startDate,setStartDate]=useState();
 
     const getEventData = async () => {
         try {
@@ -17,6 +18,8 @@ const EventDetails = () => {
                 return { ...submission, obtainedGrade: null }; // Add obtainedGrade property
             });
             setSubmissions(submissionsWithGrades);
+            // console.log(data.event)
+            setStartDate(data.event.deadLine)
 
             // Fetch user data for all submissions
             const userNamesPromises = data.event.submissions.map(submission => getUserData(submission.userId));
@@ -82,6 +85,7 @@ const EventDetails = () => {
                                 <th scope="col">Name</th>
                                 <th scope="col">File</th>
                                 <th scope="col">Submitted On</th>
+                                <th scope="col">Late By</th>
                              
                                 <th scope="col">Marks</th>
                             </tr>
@@ -89,18 +93,55 @@ const EventDetails = () => {
                         <tbody>
                             {submissions.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{userNames[index]}</td>
-                                    <td><a href={item?.fileUrl} target='_blank'>File</a></td>
-                                    <td>{item.submittedOn}</td>
-                                 
-                                    <td>
-                                        <input
-                                            type="number"
-                                            value={marks[index]}
-                                            onChange={(e) => handleMarkChange(index, e.target.value)}
-                                        />
-                                    </td>
-                                </tr>
+                        <td>{userNames[index]}</td>
+                        <td><a href={item?.fileUrl} target='_blank' rel='noopener noreferrer'>File</a></td>
+
+                        {
+                            (() => {
+                            // Parsing the dates
+                            const startDateString = new Date(startDate); // Replace startDateString with your actual startDate value
+                            const submittedOn = new Date(item.submittedOn);
+
+                            // Check the date and return the appropriate cell
+                            if (startDateString >= submittedOn) {
+                                return <td style={{ color: 'green' }}>{submittedOn.toLocaleDateString()}</td>;
+                            } else {
+                                return <td style={{ color: 'red' }}>{submittedOn.toLocaleDateString()}</td>;
+                            }
+                            })()
+                        }
+
+                        {
+                            (() => {
+                            // Parsing the dates
+                            const startDateString = new Date(startDate); // Replace startDateString with your actual startDate value
+                            const submittedOn = new Date(item.submittedOn);
+
+                            // Calculating the difference in time
+                            const timeDifference = submittedOn - startDateString;
+
+                            // Converting time difference from milliseconds to days
+                            const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+                            // Displaying the difference in days
+                            if (dayDifference >= 0) {
+                                return <td style={{ color: 'red' }}>{dayDifference} days</td>;
+                            } else {
+                                return <td style={{ color: 'green' }}>0 days</td>;
+                            }
+                            })()
+                        }
+
+                        <td>
+                            <input
+                            type="number"
+                            value={marks[index]}
+                            onChange={(e) => handleMarkChange(index, e.target.value)}
+                            />
+                        </td>
+                        </tr>
+
+                              
                             ))}
                         </tbody>
                     </table>

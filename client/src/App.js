@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Home from "./components/Home";
 import Navbar from "./components/Navbar";
 import Login from "./components/Login";
@@ -42,6 +43,7 @@ function App() {
         <Route path="/admin/manage-courses" element={<ProtectedRoute Component={ManageCourses} />} />
         <Route path="/admin/manage-courses/:courseId" element={<ProtectedRoute Component={EditCourse} />} />
         <Route path="/admin/announcements" element={<ProtectedRoute Component={Announcements} />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
   );

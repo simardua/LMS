@@ -12,6 +12,7 @@ const Home = () => {
     const success = useSelector((state)=>state.courses.success)
     const error = useSelector((state) => state.courses.error)
     const announcements = useSelector((state) => state.fetchAnnouncements.announcements).announcements
+    console.log(announcements)
     useEffect(() => {
         dispatch(fetchAllCoursesAction)
         dispatch(fetchAnnouncements)
@@ -66,7 +67,7 @@ const Home = () => {
                         <h4>Announcements</h4>
 
                         <ul>
-                            {announcements && announcements.map((e) => {
+                            {announcements && announcements.slice().reverse().map((e) => {
                                 return <li key={e._id}><p><i style={{ color: "gray", fontSize: "12px" }}>{getLocalDateString(e.createdAt)}</i><br/> {e.announcement}</p></li>
                             })}
                         </ul>

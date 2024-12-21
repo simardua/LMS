@@ -8,13 +8,13 @@ import firebase from "firebase/compat/app"
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAuW8FZmzR9hhWlE0SJEIMUJBuRaBuih6g",
-  authDomain: "lms-project-f4120.firebaseapp.com",
-  projectId: "lms-project-f4120",
-  storageBucket: "lms-project-f4120.appspot.com",
-  messagingSenderId: "364059640876",
-  appId: "1:364059640876:web:56e94ff495b75472da3d89",
-  measurementId: "G-27NDL3DDE7"
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  projectId: process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
+  appId: process.env.appId,
+  measurementId: process.env.measurementId
 };
 firebase.initializeApp(firebaseConfig)
 

@@ -81,7 +81,7 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-
+      {search &&
       <div style={{ position: 'fixed', width: '450px', height: 'auto', right: "20px", background: "white", padding: "5px", marginLeft: "10px"}}>
         {search !== "" ?
           <div className="courses-div" style={{ padding: "15px", width: "100%", border: "1px solid #ccc", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}>
@@ -105,7 +105,7 @@ const Navbar = () => {
           </div>
           : null}
       </div>
-
+            }
 
 
 

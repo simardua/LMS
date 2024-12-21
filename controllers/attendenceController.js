@@ -162,11 +162,18 @@ const getUsers=async(req,res)=>{
                 promises.push(...students.map(async (studId) => {
                     const user = await userModel.findOne({ _id: studId });
                     if (user) {
+                        let present=0;
+                        let absent=0;
                         user.courseAttendances.forEach((course) => {
                             if (course?.course.toString() === courseId.toString()) {
                                 course?.attendance.forEach((attend) => {
                                     const itemDate = new Date(attend.date);
                                     const currentDate = new Date(attendanceDate);
+                                    if(attend?.isPresent){
+                                        present+=1;
+                                    }else{
+                                        absent+=1;
+                                    }
                                 
                                     if (itemDate.getTime() === currentDate.getTime()) {
                                         data.push({
@@ -175,7 +182,9 @@ const getUsers=async(req,res)=>{
                                             date: attendanceDate,
                                             isPresent: attend?.isPresent,
                                             _id: user?._id,
-                                            attendanceId: attend?._id
+                                            attendanceId: attend?._id,
+                                            present:present,
+                                            absent:absent
                                         });
                                     }
                                 });

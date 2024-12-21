@@ -8,7 +8,7 @@ const auth = async (req, res, next) => {
         }
 
         // Verify token
-        const verifyUser = await jwt.verify(token, '123'); // Update to use the correct secret key
+        const verifyUser = await jwt.verify(token, process.env.JWT_TOKEN_KEY); // Update to use the correct secret key
 
         // If verification is successful, attach the user to the request object
         console.log(verifyUser)

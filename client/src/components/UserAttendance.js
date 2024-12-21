@@ -42,6 +42,7 @@ const UserAttendance = () => {
                         <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Date</th>
                         <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Status</th>
                         <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Change</th>
+                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Attendance %</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,7 +56,10 @@ const UserAttendance = () => {
                                     Change
                                 </button>
                             </td>
-                        </tr>
+                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                            {((stud?.present / (stud?.present + stud?.absent)) * 100).toFixed(2)} %
+                          </td>
+                                                  </tr>
                     ))}
                 </tbody>
             </table>
